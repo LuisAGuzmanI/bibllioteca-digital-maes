@@ -36,9 +36,10 @@ export default {
             menu : [
                 {
                     label: 'Home',
-                    items: [{
-                        label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'
-                    }]
+                    items: [
+                        {label: 'Inicio', icon: 'pi pi-fw pi-home', to: '/inicio'},
+                        {label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'},
+                    ]
                 },
 				{
 					label: 'UI Components', icon: 'pi pi-fw pi-sitemap',
