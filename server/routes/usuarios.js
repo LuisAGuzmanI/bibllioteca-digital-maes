@@ -45,5 +45,5 @@ router.delete('/deleteUser/:id', (req, res) => {
      .catch((error) => res.json({message: error}))
     // res.send('create user');
 })
-
+ 
 export default router;

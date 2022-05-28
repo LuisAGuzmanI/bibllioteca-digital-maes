@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
         message: "Welcome to my API :)"
     }));
 })
-
+ 
 // Cargar todas las rutas
 import mainRouter from "./routes/index.js";
 app.use("/api", mainRouter);
