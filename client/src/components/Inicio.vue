@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
     <div class="col-12 xl:col-6">
-      <div class="card mb-0">
+      <div class="card mb-3">
         <h2 class="font-bold">Vistos recientemente</h2>
         <Carousel :value="archivosVistosRecientemente" :numVisible="3" :numScroll="3" :circular="true" :responsiveOptions="responsiveOptionsVistosRecientemente">
           <template #item="archivo">
@@ -22,16 +22,8 @@
           </template>
         </Carousel>
       </div>
-    </div>
-    
-    <div class="col-12 xl:col-6">
-      <div class="card mb-0">
-        <h2 class="font-bold">Tu actividad</h2>
-      </div>
-    </div>
-    
-    <div class="col-12 xl:col-6">
-      <div class="card mb-0">
+
+      <div class="card mb-3">
         <h2 class="font-bold">Proximas asesorías intensivas</h2>
         <span v-for="({titulo, fecha, hora, agendado}, index) in listaAsesoriasIntensivas" :key="index">
           <div class="card">
@@ -49,6 +41,27 @@
         </span>
       </div>
     </div>
+    
+    <div class="col-12 xl:col-6">
+      <div class="card mb-3">
+        <h2 class="font-bold">Tu actividad</h2>
+        <Chart type="line" :data="basicData" :options="basicOptions" />
+      </div> 
+
+      <div class="card mb-3">
+        <h2 class="font-bold">Consulta disponibilidad de MAEs</h2>
+        <DataTable :value="maesDisponibles">
+          <Column field="nombre" header="Nombre"></Column>
+          <Column field="semestre" header="Semestre"></Column>
+          <Column field="programa" header="Programa"></Column>
+        </DataTable>
+      </div> 
+    </div>
+
+    <div class="col-12 xl:col-6">
+      
+    </div>
+
   </div>
 </template>
 
@@ -59,12 +72,7 @@ export default {
       archivosVistosRecientemente: ['Notas Embriología', 'Video Asesoría Anatomía', 'PowerPoint Asesoría Anatomía', 'Cheatsheet Anatomía', 'Video Asesoría Embriología'],
       responsiveOptionsVistosRecientemente: [
         {
-          breakpoint: '1024px',
-          numVisible: 3,
-          numScroll: 1
-        },
-        {
-          breakpoint: '800px',
+          breakpoint: '1300px',
           numVisible: 2,
           numScroll: 1
         },
@@ -105,8 +113,24 @@ export default {
           hora: '3:30 PM',
           agendado: false
         },
-      ]
-
+      ],
+      basicData: {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio'],
+        datasets: [
+            {
+                label: 'Recursos visitados',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                fill: true,
+                borderColor: '#42A5F5',
+                tension: .4
+            }
+       ] 
+      },
+      maesDisponibles: Array(10).fill({
+          nombre: 'Luis Ángel Guzmán Iribe',
+          semestre: 4,
+          programa: 'ITC'
+        })
     }
   }
 }
