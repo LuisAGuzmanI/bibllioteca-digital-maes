@@ -43,6 +43,22 @@
 
       <div class="card mb-3">
         <h2 class="font-bold">Lista de Usuarios</h2>
+
+        <div class="card p-fluid">
+          <h5>Vertical Grid</h5>
+          <div class="formgrid grid">
+            <div class="field col">
+              <label for="nombre">Nombre</label>
+              <InputText v-model="userForm.nombre" id="nombre" type="text" />
+            </div>
+            <div class="field col">
+              <label for="email">Email</label>
+              <InputText v-model="userForm.email" id="email" type="text" />
+            </div>
+            <Button class="col" label="Submit" v-on:click="onSubmiUser"></Button>
+          </div>
+        </div>
+
         <span v-for="({nombre, email},index) in userList" :key="index">
           <p>{{nombre}} - {{email}}</p>
         </span>
@@ -69,7 +85,7 @@
 </template>
 
 <script>
-import getUsers from '../firebase/firebase-config'
+import {getUsuarios, createUsuario} from '../firebase/usuarios-ep'
 
 export default {
   data() {
@@ -137,7 +153,10 @@ export default {
           programa: 'ITC'
         }),
       userList: null,
-      
+      userForm: {
+        nombre: '',
+        email: ''
+      }
     }
   },
   created() {
@@ -146,13 +165,18 @@ export default {
   methods: {
     async getUserList() {
        try {                
-        const users = await getUsers()
+        const users = await getUsuarios()
         this.userList = users;
         console.log(this.userList)
       } catch (error) {
         console.log('UserFetching', error);
-        this.getUsers = 'No se pudo cargar el API'
+        this.getUsuarios = 'No se pudo cargar el API'
       }
+    },
+    onSubmiUser() {
+      const data = {...this.userForm};
+      console.log(data);
+      createUsuario(data);
     }
   }
 }
