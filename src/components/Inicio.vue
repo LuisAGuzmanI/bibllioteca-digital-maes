@@ -40,6 +40,13 @@
           </div>
         </span>
       </div>
+
+      <div class="card mb-3">
+        <h2 class="font-bold">Lista de Usuarios</h2>
+        <span v-for="({nombre, email},index) in userList" :key="index">
+          <p>{{nombre}} - {{email}}</p>
+        </span>
+      </div>
     </div>
     
     <div class="col-12 xl:col-6">
@@ -58,14 +65,12 @@
       </div> 
     </div>
 
-    <div class="col-12 xl:col-6">
-      
-    </div>
-
   </div>
 </template>
 
 <script>
+import getUsers from '../firebase/firebase-config'
+
 export default {
   data() {
     return {
@@ -130,7 +135,24 @@ export default {
           nombre: 'Luis Ángel Guzmán Iribe',
           semestre: 4,
           programa: 'ITC'
-        })
+        }),
+      userList: null,
+      
+    }
+  },
+  created() {
+    this.getUserList();
+  },
+  methods: {
+    async getUserList() {
+       try {                
+        const users = await getUsers()
+        this.userList = users;
+        console.log(this.userList)
+      } catch (error) {
+        console.log('UserFetching', error);
+        this.getUsers = 'No se pudo cargar el API'
+      }
     }
   }
 }
