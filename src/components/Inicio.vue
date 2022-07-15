@@ -25,6 +25,22 @@
 
       <div class="card mb-3">
         <h2 class="font-bold">Proximas asesorías intensivas</h2>
+        <span v-for="({fecha, titulo, materia}, index) in asesoriasIntensivasList" :key="index"> 
+          <div class="card">
+            <div class="grid">
+                <div class="col-10">
+                  <h3 class="text-5xl">{{titulo}}</h3>
+                  <h6 class="text-2xl"> {{materia}} - Modelación computacional de sistemas electromagnéticos </h6>
+                  <h6 class="text-2xl"> {{dateToStringMMDD(fecha.seconds)}} </h6>
+                  <!-- TODO: Agregar el titulo de la materia -->
+                </div>
+                <div class="col-2 icon-div-center">
+                  <i v-if="true" class="pi pi-check" style="font-size: 3rem;"></i>
+                  <i v-else class="pi pi-calendar-plus" style="font-size: 3rem;"></i>
+                </div>
+            </div>
+          </div>
+        </span>
         <span v-for="({titulo, fecha, hora, agendado}, index) in listaAsesoriasIntensivas" :key="index">
           <div class="card">
             <div class="grid">
@@ -38,29 +54,6 @@
                 </div>
             </div>
           </div>
-        </span>
-      </div>
-
-      <div class="card mb-3">
-        <h2 class="font-bold">Lista de Usuarios</h2>
-
-        <div class="card p-fluid">
-          <h5>Vertical Grid</h5>
-          <div class="formgrid grid">
-            <div class="field col">
-              <label for="nombre">Nombre</label>
-              <InputText v-model="userForm.nombre" id="nombre" type="text" />
-            </div>
-            <div class="field col">
-              <label for="email">Email</label>
-              <InputText v-model="userForm.email" id="email" type="text" />
-            </div>
-            <Button class="col" label="Submit" v-on:click="onSubmiUser"></Button>
-          </div>
-        </div>
-
-        <span v-for="({nombre, email},index) in userList" :key="index">
-          <p>{{nombre}} - {{email}}</p>
         </span>
       </div>
     </div>
@@ -79,13 +72,39 @@
           <Column field="programa" header="Programa"></Column>
         </DataTable>
       </div> 
+      <div class="card mb-3">
+        <h2 class="font-bold">Lista de Usuarios</h2>
+
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="nombre">Nombre</label>
+            <InputText v-model="userForm.nombre" id="nombre" type="text" />
+          </div>
+          <div class="field col">
+            <label for="email">Email</label>
+            <InputText v-model="userForm.email" id="email" type="text" />
+          </div>
+          <Button class="col vertical-align-middle  h-3rem" label="Submit" v-on:click="onSubmiUser"></Button>
+        </div>
+        <span v-for="({nombre, email},index) in userList" :key="index">
+          <p>{{nombre}} - {{email}}</p>
+        </span>
+      </div>
     </div>
 
   </div>
 </template>
 
 <script>
-import {getUsuarios, createUsuario} from '../firebase/usuarios-ep'
+import { 
+  getUsuarios,
+  getUsuario
+} from '../firebase/usuarios-ep'
+
+import { 
+  getAsesoriasIntensivas,
+} from '../firebase/asesorias-intensivas-ep'
+
 
 export default {
   data() {
@@ -153,6 +172,7 @@ export default {
           programa: 'ITC'
         }),
       userList: null,
+      asesoriasIntensivasList: null,
       userForm: {
         nombre: '',
         email: ''
@@ -161,22 +181,41 @@ export default {
   },
   created() {
     this.getUserList();
+    this.getAsesoriasList();
   },
   methods: {
+    dateToStringMMDD(fechaInt) {
+      const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+      console.log(fechaInt*1000)
+      const fecha = new Date(fechaInt*1000);
+      return `${fecha.getDay()} / ${meses[fecha.getMonth()]} - ${fecha.getHours() > 12 ? fecha.getHours()-12 : fecha.getHours()}:${fecha.getMinutes() < 10 ? `0${fecha.getMinutes()}` : fecha.getMinutes()} ${fecha.getHours() > 12 ? 'PM' : 'AM'}`
+    },
     async getUserList() {
        try {                
         const users = await getUsuarios()
+        getUsuario();
         this.userList = users;
-        console.log(this.userList)
+        // console.log(this.userList)
       } catch (error) {
         console.log('UserFetching', error);
-        this.getUsuarios = 'No se pudo cargar el API'
+        this.userList = ['No se pudo cargar el API']
       }
+    },
+    async getAsesoriasList() {
+       try {                
+        const asesoriasIntensivas = await getAsesoriasIntensivas()
+        this.asesoriasIntensivasList = asesoriasIntensivas;
+        console.log('Asesorias Intensivas: ',this.asesoriasIntensivasList)
+      } catch (error) {
+        console.log('Error de Fetching [Asesorías Intensivas]', error);
+        this.asesoriasIntensivasList = ['No se pudo cargar el API']
+      }
+      // TODO: Una vez que se tiene la información de las asesorías. Hacer una función para generar el incono para agregar si no se ha agendado.
     },
     onSubmiUser() {
       const data = {...this.userForm};
       console.log(data);
-      createUsuario(data);
+      // createUsuario(data);
     }
   }
 }

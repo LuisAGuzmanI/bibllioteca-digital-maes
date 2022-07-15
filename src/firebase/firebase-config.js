@@ -1,6 +1,6 @@
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore/lite';
+import { getFirestore } from 'firebase/firestore';
 
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
@@ -12,7 +12,6 @@ const firebaseConfig = {
     appId: "1:564628702811:web:4b10d817b69ad84a8e217e",
     measurementId: "G-SW1BTZR1G6"
 };
-
 
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
