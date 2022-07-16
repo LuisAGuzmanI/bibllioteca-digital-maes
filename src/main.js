@@ -97,10 +97,26 @@ import TriStateCheckbox from 'primevue/tristatecheckbox';
 import CodeHighlight from './AppCodeHighlight';
 import BlockViewer from './BlockViewer';
 
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+
 router.beforeEach(function(to, from, next) {
     window.scrollTo(0, 0);
     next();
 });
+
+const firebaseConfig = {
+    apiKey: "AIzaSyALBNCMdSWnDRsqRpXACCi4bDuA1VN5LZg",
+    authDomain: "biblioteca-digital-maes.firebaseapp.com",
+    projectId: "biblioteca-digital-maes",
+    storageBucket: "biblioteca-digital-maes.appspot.com",
+    messagingSenderId: "564628702811",
+    appId: "1:564628702811:web:4b10d817b69ad84a8e217e",
+    measurementId: "G-SW1BTZR1G6"
+};
+
+export const firebaseApp = initializeApp(firebaseConfig);
+export const firestoreDB = getFirestore(firebaseApp);
 
 const app = createApp(AppWrapper);
 

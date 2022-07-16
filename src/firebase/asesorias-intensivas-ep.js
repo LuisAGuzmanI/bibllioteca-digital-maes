@@ -1,4 +1,4 @@
-import { db } from './firebase-config'
+import { firestoreDB } from '../main';
 import {  
     collection,
     getDocs, 
@@ -6,7 +6,7 @@ import {
 
 // Documentación: https://firebase.google.com/docs/firestore/manage-data/add-data
 
-const asesoriasIntensivasCollection = collection(db, 'asesorias-intensivas');
+const asesoriasIntensivasCollection = collection(firestoreDB, 'asesorias-intensivas');
 
 // READ
 export async function getAsesoriasIntensivas() {

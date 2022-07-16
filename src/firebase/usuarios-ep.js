@@ -1,4 +1,4 @@
-import { db } from './firebase-config'
+import { firestoreDB } from '../main';
 import {  
     // query, 
     // where, 
@@ -12,7 +12,7 @@ import {
 
 // Documentación: https://firebase.google.com/docs/firestore/manage-data/add-data
 
-const usuariosCollection = collection(db, 'usuarios');
+const usuariosCollection = collection(firestoreDB, 'usuarios');
 
 // READ
 export async function getUsuarios() {
@@ -22,7 +22,7 @@ export async function getUsuarios() {
 }
 
 export async function getUsuario() {
-    const docRef = doc(db, "usuarios", "JDGkId6Df8Ev2n2Jag0L");
+    const docRef = doc(firestoreDB, "usuarios", "JDGkId6Df8Ev2n2Jag0L");
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -47,7 +47,7 @@ export async function createUsuario(usuario) {
 // }
 
 // export async function updateUsuario() {
-//     const userRef = doc(db, "usuarios", "A01741747");
+//     const userRef = doc(firestoreDB, "usuarios", "A01741747");
 
 //     // Set the "capital" field of the city 'DC'
 //     await updateDoc(userRef, {

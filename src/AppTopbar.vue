@@ -14,22 +14,28 @@
 			<i class="pi pi-ellipsis-v"></i>
 		</button>
 		<ul class="layout-topbar-menu hidden lg:flex origin-top">
-			<li>
+			<!-- <li>
 				<button class="p-link layout-topbar-button">
 					<i class="pi pi-calendar"></i>
 					<span>Events</span>
 				</button>
-			</li>
-			<li>
+			</li> -->
+			<!-- <li>
 				<button class="p-link layout-topbar-button">
 					<i class="pi pi-cog"></i>
 					<span>Settings</span>
 				</button>
-			</li>
-			<li>
+			</li> -->
+			<!-- <li>
 				<button class="p-link layout-topbar-button">
 					<i class="pi pi-user"></i>
 					<span>Profile</span>
+				</button>
+			</li> -->
+			<li>
+				<button class="p-link layout-topbar-button" @click="handleSingOut">
+					<i class="pi pi-sign-out"></i>
+					<span>Cerrar sesión</span>
 				</button>
 			</li>
 		</ul>
@@ -37,6 +43,8 @@
 </template>
 
 <script>
+import { getAuth, signOut } from '@firebase/auth';
+import router from './router';
 export default {
     methods: {
         onMenuToggle(event) {
@@ -47,6 +55,13 @@ export default {
         },
 		topbarImage() {
 			return this.$appState.darkTheme ? 'images/logo-maes.svg' : 'images/logo-maes.svg';
+		},
+		handleSingOut(){
+			console.log('onSingOut!')
+			const auth = getAuth();
+			signOut(auth).then(() => {
+				router.push('/login');
+			})
 		}
     },
 	computed: {
