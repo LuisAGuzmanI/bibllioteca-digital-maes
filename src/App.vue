@@ -35,12 +35,18 @@ export default {
             mobileMenuActive: false,
             menu : [
                 {
-                    label: 'Home',
+                    label: 'Biblioteca',
                     items: [
-                        {label: 'Inicio', icon: 'pi pi-fw pi-home', to: '/inicio'},
-                        {label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/'},
+                        {label: 'Inicio', icon: 'pi pi-fw pi-home', to: '/'},
                     ]
                 },
+                {
+                    label: 'Plantilla',
+                    items: [
+                        {label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/dashboard'},
+                    ]
+                }
+                /*
 				{
 					label: 'UI Components', icon: 'pi pi-fw pi-sitemap',
 					items: [
@@ -140,7 +146,7 @@ export default {
                         {label: 'Documentation', icon: 'pi pi-fw pi-question', command: () => {window.location = "#/documentation"}},
                         {label: 'View Source', icon: 'pi pi-fw pi-search', command: () => {window.location = "https://github.com/primefaces/sakai-vue"}}
                     ]
-                }
+                }*/
             ]
         }
     },

@@ -9,14 +9,14 @@ const routes = [
         children: [
             {
                 path: '',
-                name: 'dashboard',
-                component: () => import('./components/Dashboard.vue')
-            },
-            {
-                path: '/inicio',
                 name: 'inicio',
                 component: () => import('./components/Inicio.vue')
             },
+            {
+                path: '/dashboard',
+                name: 'dashboard',
+                component: () => import('./components/Dashboard.vue')
+            },/*
             {
                 path: '/formlayout',
                 name: 'formlayout',
@@ -143,7 +143,7 @@ const routes = [
                 path: '/icons',
                 name: 'icons',
                 component: () => import('./components/IconsDemo.vue')
-            }
+            }*/
         ]
     },
     {
