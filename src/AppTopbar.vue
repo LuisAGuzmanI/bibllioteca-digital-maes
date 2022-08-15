@@ -27,7 +27,7 @@
 				</button>
 			</li> -->
 			<!-- <li>
-				<button class="p-link layout-topbar-button">
+				<button class="p-link layout-topbar-button" @click="logUserInfo">
 					<i class="pi pi-user"></i>
 					<span>Profile</span>
 				</button>
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getAuth, signOut } from '@firebase/auth';
+import { getAuth, signOut, /*onAuthStateChanged*/ } from '@firebase/auth';
 import router from './router';
 export default {
     methods: {
@@ -62,7 +62,24 @@ export default {
 			signOut(auth).then(() => {
 				router.push('/login');
 			})
-		}
+		},
+		// logUserInfo(){
+		// 	const auth = getAuth();
+		// 	onAuthStateChanged(auth, (user) => {
+		// 	if (user) {
+		// 		// User is signed in, see docs for a list of available properties
+		// 		// https://firebase.google.com/docs/reference/js/firebase.User
+		// 		// const uid = user.uid;
+		// 		console.log('USER IS SIGNED IN')
+		// 		console.log(user.email)
+		// 		// ...
+		// 	} else {
+		// 		// User is signed out
+		// 		console.log('USER IS SIGNED OUT')
+		// 		// ...
+		// 	}
+		// 	});
+		// }
     },
 	computed: {
 		darkTheme() {

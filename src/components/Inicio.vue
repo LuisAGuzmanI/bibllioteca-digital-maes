@@ -30,8 +30,8 @@
             <div class="grid">
                 <div class="col-10">
                   <h3 class="text-5xl">{{titulo}}</h3>
-                  <h6 class="text-2xl"> {{materia}} - Modelación computacional de sistemas electromagnéticos </h6>
-                  <h6 class="text-2xl"> {{dateToStringMMDD(fecha.seconds)}} </h6>
+                  <h6 class="text-2xl"> {{materia}} - *Nombre de la materia* </h6>
+                  <h6 class="text-2xl"> {{dateToStringMMDD(fecha.toDate())}} </h6>
                   <!-- TODO: Agregar el titulo de la materia -->
                 </div>
                 <div class="col-2 icon-div-center">
@@ -72,34 +72,13 @@
           <Column field="programa" header="Programa"></Column>
         </DataTable>
       </div> 
-      <div class="card mb-3">
-        <h2 class="font-bold">Lista de Usuarios</h2>
-
-        <div class="formgrid grid">
-          <div class="field col">
-            <label for="nombre">Nombre</label>
-            <InputText v-model="userForm.nombre" id="nombre" type="text" />
-          </div>
-          <div class="field col">
-            <label for="email">Email</label>
-            <InputText v-model="userForm.email" id="email" type="text" />
-          </div>
-          <Button class="col vertical-align-middle  h-3rem" label="Submit" v-on:click="onSubmiUser"></Button>
-        </div>
-        <span v-for="({nombre, email},index) in userList" :key="index">
-          <p>{{nombre}} - {{email}}</p>
-        </span>
-      </div>
     </div>
 
   </div>
 </template>
 
 <script>
-import { 
-  getUsuarios,
-  getUsuario
-} from '../firebase/usuarios-ep'
+import UsuariosService from '../firebase/usuarios-ep'
 
 import { 
   getAsesoriasIntensivas,
@@ -111,49 +90,10 @@ export default {
     return {
       archivosVistosRecientemente: ['Notas Embriología', 'Video Asesoría Anatomía', 'PowerPoint Asesoría Anatomía', 'Cheatsheet Anatomía', 'Video Asesoría Embriología'],
       responsiveOptionsVistosRecientemente: [
-        {
-          breakpoint: '1300px',
-          numVisible: 2,
-          numScroll: 1
-        },
-        {
-          breakpoint: '600px',
-          numVisible: 1,
-          numScroll: 1
-        }
+        { breakpoint: '1300px', numVisible: 2, numScroll: 1 },
+        { breakpoint: '600px', numVisible: 1, numScroll: 1 }
       ],
-      listaAsesoriasIntensivas: [
-        {
-          titulo: 'Sistema Nervioso',
-          fecha: '24 / Mayo',
-          hora: '4:00 PM',
-          agendado: false
-        },
-        {
-          titulo: 'Genetica Médica',
-          fecha: '26 / Mayo',
-          hora: '3:30 PM',
-          agendado: true
-        },
-        {
-          titulo: 'Embriología',
-          fecha: '27 / Mayo',
-          hora: '5:00 PM',
-          agendado: false
-        },
-        {
-          titulo: 'Modelación Matemática Intermedia',
-          fecha: '30 / Mayo',
-          hora: '5:00 PM',
-          agendado: true
-        },
-        {
-          titulo: 'Biomimetica',
-          fecha: '1 / Junio',
-          hora: '3:30 PM',
-          agendado: false
-        },
-      ],
+      listaAsesoriasIntensivas: [],
       basicData: {
         labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio'],
         datasets: [
@@ -166,40 +106,21 @@ export default {
             }
        ] 
       },
-      maesDisponibles: Array(10).fill({
-          nombre: 'Luis Ángel Guzmán Iribe',
-          semestre: 4,
-          programa: 'ITC'
-        }),
-      userList: null,
+      maesDisponibles: Array(10).fill({nombre: 'Luis Ángel Guzmán Iribe', semestre: 4, programa: 'ITC'}),
       asesoriasIntensivasList: null,
-      userForm: {
-        nombre: '',
-        email: ''
-      }
+      usuariosService: null,
     }
   },
   created() {
-    this.getUserList();
+    this.usuariosService = new UsuariosService();
     this.getAsesoriasList();
   },
   methods: {
-    dateToStringMMDD(fechaInt) {
+    dateToStringMMDD(fecha) {
       const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-      console.log(fechaInt*1000)
-      const fecha = new Date(fechaInt*1000);
+      // const fecha = new Date(fechaInt*1000);
+      console.log(fecha)
       return `${fecha.getDay()} / ${meses[fecha.getMonth()]} - ${fecha.getHours() > 12 ? fecha.getHours()-12 : fecha.getHours()}:${fecha.getMinutes() < 10 ? `0${fecha.getMinutes()}` : fecha.getMinutes()} ${fecha.getHours() > 12 ? 'PM' : 'AM'}`
-    },
-    async getUserList() {
-       try {                
-        const users = await getUsuarios()
-        getUsuario();
-        this.userList = users;
-        // console.log(this.userList)
-      } catch (error) {
-        console.log('UserFetching', error);
-        this.userList = ['No se pudo cargar el API']
-      }
     },
     async getAsesoriasList() {
        try {                
@@ -212,11 +133,6 @@ export default {
       }
       // TODO: Una vez que se tiene la información de las asesorías. Hacer una función para generar el incono para agregar si no se ha agendado.
     },
-    onSubmiUser() {
-      const data = {...this.userForm};
-      console.log(data);
-      // createUsuario(data);
-    }
   }
 }
 </script>

@@ -14,31 +14,34 @@ import {
 
 const usuariosCollection = collection(firestoreDB, 'usuarios');
 
-// READ
-export async function getUsuarios() {
-    const usersSnapshot = await getDocs(usuariosCollection);
-    const userList = usersSnapshot.docs.map(doc => doc.data());
-    return userList;
-}
+export default class UsuariosService {
 
-export async function getUsuario() {
-    const docRef = doc(firestoreDB, "usuarios", "JDGkId6Df8Ev2n2Jag0L");
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-        return docSnap.data();
-    } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-        return null;
+    // READ
+    async getUsuarios() {
+        const usersSnapshot = await getDocs(usuariosCollection);
+        const userList = usersSnapshot.docs.map(doc => doc.data());
+        return userList;
     }
-}
 
-// CREATE
-export async function createUsuario(usuario) {
-    const docRef = await addDoc(usuariosCollection, usuario);
-    return docRef;
+    async getUsuario() {
+        const docRef = doc(firestoreDB, "usuarios", "JDGkId6Df8Ev2n2Jag0L");
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            return docSnap.data();
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+            return null;
+        }
+    }
+
+    // CREATE
+    async createUsuario(usuario) {
+        const docRef = await addDoc(usuariosCollection, usuario);
+        return docRef;
+    }
 }
 
 // // UPDATE
