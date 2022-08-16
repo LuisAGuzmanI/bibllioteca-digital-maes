@@ -38,6 +38,7 @@ export default {
                     label: 'Biblioteca',
                     items: [
                         {label: 'Inicio', icon: 'pi pi-fw pi-home', to: '/'},
+                        {label: 'Explora', icon: 'pi pi-fw pi-search', to: '/explora'},
                     ]
                 },
                 {

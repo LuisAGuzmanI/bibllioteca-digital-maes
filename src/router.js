@@ -20,7 +20,13 @@ const routes = [
                 path: '/dashboard',
                 name: 'dashboard',
                 component: () => import('./components/Dashboard.vue')
-            },/*
+            },
+            {
+                path: '/explora',
+                name: 'explora',
+                component: () => import('./components/Explora.vue')
+            },
+            /*
             {
                 path: '/formlayout',
                 name: 'formlayout',
