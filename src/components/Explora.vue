@@ -11,12 +11,21 @@
               mode="basic"
               name="demo[]"
               chooseLabel="Subir Archivo"
+              :customUpload="true"
+              @uploader="onUpload"
+              :auto="true"
+              class="inline-block"
+            />
+            <!-- <FileUpload
+              mode="basic"
+              name="demo[]"
+              chooseLabel="Subir Archivo"
               url="./upload.php"
               accept="image/*"
               :maxFileSize="1000000"
               @upload="onUpload"
               class="inline-block"
-            />
+            /> -->
           </div>
         </div>
 
@@ -91,11 +100,26 @@
 </template>
 
 <script>
+import {uploadFile} from "../firebase/storage/documents";
+
 export default {
   data() {
     return {
-      tableData: Array(10).fill({ titulo: "Formación del Disco Bilaminar", area: "Medicina", materia: "Embriología", tipo: "Video", fecha: "15/08/2022"}),
+      tableData: Array(10).fill({
+        titulo: "Formación del Disco Bilaminar",
+        area: "Medicina",
+        materia: "Embriología",
+        tipo: "Video",
+        fecha: "15/08/2022",
+      }),
     };
+  },
+  methods: {
+    async onUpload(e) {
+      const file = e.files[0]; 
+      console.log(file);
+      await uploadFile(file);
+    },
   },
 };
 </script>

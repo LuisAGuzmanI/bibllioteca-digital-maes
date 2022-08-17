@@ -98,7 +98,8 @@ import CodeHighlight from './AppCodeHighlight';
 import BlockViewer from './BlockViewer';
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';  
+import { getStorage } from "firebase/storage";
 
 router.beforeEach(function(to, from, next) {
     window.scrollTo(0, 0);
@@ -117,6 +118,9 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firestoreDB = getFirestore(firebaseApp);
+
+// Initialize Cloud Storage and get a reference to the service
+export const storage = getStorage(firebaseApp);
 
 const app = createApp(AppWrapper);
 

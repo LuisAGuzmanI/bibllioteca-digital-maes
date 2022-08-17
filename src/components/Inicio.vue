@@ -103,9 +103,9 @@
 </template>
 
 <script>
-import UsuariosService from "../firebase/usuarios-ep";
+import UsuariosService from "../firebase/firestore/usuarios-ep";
 
-import { getAsesoriasIntensivas } from "../firebase/asesorias-intensivas-ep";
+import { getAsesoriasIntensivas } from "../firebase/firestore/asesorias-intensivas-ep";
 
 export default {
   data() {
