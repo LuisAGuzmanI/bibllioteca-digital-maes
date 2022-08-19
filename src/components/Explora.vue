@@ -50,23 +50,21 @@
 
       <div class="field">
         <h5 class="font-bold mb-1">Archivo</h5>
-        <FileUpload
-          mode="basic"
-          chooseLabel="Subir Archivo"
-          :customUpload="true"
-          @uploader="onUpload"
-          class="felx-2 inline-block"
-        />
+          <FileUpload
+            mode="basic"
+            chooseLabel="Subir Archivo"
+            :customUpload="true"
+            :auto="true"
+            @uploader="onFileSubmit"
+            class="felx-2 "
+          />
       </div>
 
       <div class="flex card-container">
         <span class="inline-block flex-1"> </span>
         <div class="inline-block flex-2">
-          <Button
-            label="Confirmar"
-            icon="pi pi-check"
-            @click="onPressModalButton"
-          />
+          <Button v-if="!enableSubmitButton" label="Confirmar" icon="pi pi-check" disabled="disabled"/>
+          <Button v-else label="Confirmar" icon="pi pi-check" @click="onSubmit"/>
         </div>
       </div>
     </div>
@@ -87,10 +85,10 @@
           </div>
         </div>
 
-        <div class="card-container mt-3 p-0">
-          <div class="inline-block mr-3">
+        <div class="grid mt-3 p-0">
+          <div class="lg:col-3 sm:col-12 mr-3">
             <h5 class="font-bold mb-1">Titulo</h5>
-            <span class="p-input-icon-left">
+            <span class="p-input-icon-left w-full">
               <i class="pi pi-search" />
               <div class="p-inputgroup">
                 <Button @click="onSearch" icon="pi pi-search" />
@@ -99,12 +97,12 @@
                   v-model="titleQuery"
                   @keyup.enter="onSearch"
                   placeholder="Formación del Disco Bilaminar"
-                  class="w-30rem"
+                  class="w-full"
                 />
               </div>
             </span>
           </div>
-          <div class="inline-block mr-3">
+          <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
             <h5 class="font-bold mb-1">Area</h5>
             <Dropdown
               v-model="selectedOption"
@@ -112,10 +110,10 @@
               optionLabel="name"
               placeholder="Area"
               emptyMessage="No hay opciones disponibles"
-              class="w-16rem"
+              class="w-full"
             />
           </div>
-          <div class="inline-block mr-3">
+          <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
             <h5 class="font-bold mb-1">Materia</h5>
             <Dropdown
               v-model="selectedOption"
@@ -123,10 +121,10 @@
               optionLabel="name"
               placeholder="Materia"
               emptyMessage="No hay opciones disponibles"
-              class="w-16rem"
+              class="w-full"
             />
           </div>
-          <div class="inline-block mr-3">
+          <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
             <h5 class="font-bold mb-1">Tipo</h5>
             <Dropdown
               v-model="selectedOption"
@@ -134,10 +132,10 @@
               optionLabel="name"
               placeholder="Tipo"
               emptyMessage="No hay opciones disponibles"
-              class="w-16rem"
+              class="w-full"
             />
           </div>
-          <div class="inline-block mr-3">
+          <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
             <h5 class="font-bold mb-1">Ordenar por</h5>
             <Dropdown
               v-model="selectedOption"
@@ -145,7 +143,7 @@
               optionLabel="name"
               placeholder="Ordenar por"
               emptyMessage="No hay opciones disponibles"
-              class="w-16rem"
+              class="w-full"
             />
           </div>
         </div>
@@ -162,12 +160,12 @@
 </template>
 
 <script>
-import { uploadFile } from "../firebase/storage/documents";
+// import { uploadFile } from "../firebase/storage/documents";
 
 export default {
   data() {
     return {
-      tableData: Array(10).fill({
+      tableData: Array(20).fill({
         titulo: "Formación del Disco Bilaminar",
         area: "Medicina",
         materia: "Embriología",
@@ -178,13 +176,14 @@ export default {
       selectedOption: null,
       display: false,
       titleQuery: "",
+      fileUpload: null,
     };
   },
   methods: {
-    async onUpload(e) {
+    async onFileSubmit(e) {
       const file = e.files[0];
-      console.log(file);
-      await uploadFile(file);
+      this.fileUpload = file;
+      // await uploadFile(file);
     },
     onPressModalButton() {
       this.display = true;
@@ -193,6 +192,11 @@ export default {
       console.log("Hello from onSearch!", this.titleQuery);
     },
   },
+  computed: {
+    enableSubmitButton() {
+      return true;
+    }
+  }
 };
 </script>
 
