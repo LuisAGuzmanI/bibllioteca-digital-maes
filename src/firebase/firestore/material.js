@@ -21,7 +21,7 @@ export async function createMaterial(data) {
         subjectDisplay: data.subjectDisplay,
         type: data.type,
         date: Timestamp.now(),
-        storageId: 'testeo',
+        storageRef: data.storageRef,
     });
 
     return docRef.id;

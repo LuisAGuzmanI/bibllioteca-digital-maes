@@ -65,7 +65,6 @@
       <div class="flex card-container">
         <span class="inline-block flex-1"> </span>
         <div class="inline-block flex-2">
-          <!-- TODO: Hacer que el botón solo esté disponible si ya se llenaron todos los campos -->
           <Button
             v-if="!enableSubmitButton"
             label="Confirmar"
@@ -149,24 +148,24 @@
               class="w-full"
             />
           </div>
-          <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
-            <h5 class="font-bold mb-2">Ordenar por</h5>
-            <Dropdown
-              v-model="sotringQuery"
-              :options="sortingOptions"
-              optionLabel="name"
-              placeholder="Ordenar por"
-              emptyMessage="No hay opciones disponibles"
-              class="w-full"
-            />
-          </div>
         </div>
-        <DataTable :value="tableData" class="mt-3">
-          <Column field="title" header="Titulo"></Column>
+        <DataTable
+          :value="tableData"
+          v-model:selection="selectedRow"
+          selectionMode="single"
+          stripedRows
+          responsiveLayout="scroll"
+          class="mt-3"
+        >
+          <Column field="title" header="Titulo" :sortable="true"></Column>
+          <Column
+            field="formatedDate"
+            header="Fecha Añadido"
+            :sortable="true"
+          ></Column>
           <Column field="areaDisplay" header="Area"></Column>
           <Column field="subjectDisplay" header="Materia"></Column>
           <Column field="type" header="Tipo"></Column>
-          <Column field="formatedDate" header="Fecha Añadido"></Column>
         </DataTable>
       </div>
     </div>
@@ -174,8 +173,8 @@
 </template>
 
 <script>
-import formatDate from '../../helpers/formatDate'
-import { uploadFile } from "../../firebase/storage/documents";
+import formatDate from "../../helpers/formatDate";
+import { uploadFile, getFileUrl } from "../../firebase/storage/documents";
 import { getSubjectsFromArea } from "../../firebase/firestore/areas-subjects";
 import {
   getMaterials,
@@ -186,6 +185,8 @@ export default {
   data() {
     return {
       tableData: [],
+      selectedRow: null,
+
       selectedOption: null,
       display: false,
 
@@ -208,17 +209,12 @@ export default {
       ],
       subjectOptions: [],
       formSubjetOptions: [],
-      sortingOptions: [
-        { name: "Fecha", code: "date" },
-        { name: "Titulo", code: "date" },
-      ],
 
       // Search query parameters
       titleQuery: "",
       areaQuery: "",
       subjectQuery: "",
       typeQuery: "",
-      sotringQuery: "",
 
       // File form data
       fileUpload: null,
@@ -231,10 +227,9 @@ export default {
   async created() {
     this.tableData = await getMaterials();
     this.tableData.map((element) => {
-      element.formatedDate = formatDate(new Date(element.date.seconds * 1000))
+      element.formatedDate = formatDate(new Date(element.date.seconds * 1000));
       return element;
     });
-    console.log(this.tableData);
   },
   methods: {
     onFileSubmit(e) {
@@ -243,19 +238,19 @@ export default {
       // await uploadFile(file);
     },
     async onSubmit() {
-      console.log(this.fileUpload);
 
-      const docRefId = await createMaterial({
+      const strgRef = await uploadFile(this.fileUpload);
+
+      await createMaterial({
         autor: this.autorUpload,
         title: this.titleUpload,
         type: this.fileUpload.type.split("/")[1],
         area: this.areaUpload.code,
-        areaDisplay: this.areaUpload.name,
         subject: this.subjectUpload.code,
+        areaDisplay: this.areaUpload.name,
         subjectDisplay: this.subjectUpload.name,
+        storageRef: strgRef,
       });
-
-      await uploadFile(this.fileUpload, docRefId);
 
       this.fileUpload = null;
       this.titleUpload = "";
@@ -295,6 +290,10 @@ export default {
     },
     areaUpload() {
       this.upadteFormSubjectOptions();
+    },
+    selectedRow() {
+      console.log(this.selectedRow.storageRef)
+      console.log(getFileUrl(this.selectedRow.storageRef));
     },
   },
 };
