@@ -243,7 +243,7 @@
 
 <script>
 import EventBus from '@/AppEventBus';
-import ProductService from '../service/ProductService';
+import ProductService from '../../service/ProductService';
 
 export default {
 	data() {

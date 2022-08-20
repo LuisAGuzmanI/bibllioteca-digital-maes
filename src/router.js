@@ -14,17 +14,17 @@ const routes = [
             {
                 path: '',
                 name: 'inicio',
-                component: () => import('./components/Inicio.vue')
+                component: () => import('./components/views/Inicio.vue')
             },
             {
                 path: '/dashboard',
                 name: 'dashboard',
-                component: () => import('./components/Dashboard.vue')
+                component: () => import('./components/views/Dashboard.vue')
             },
             {
                 path: '/explora',
                 name: 'explora',
-                component: () => import('./components/Explora.vue')
+                component: () => import('./components/views/Explora.vue')
             },
             /*
             {

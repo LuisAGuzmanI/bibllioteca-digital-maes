@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: Convertir este Dialog en un componente separado -->
   <Dialog
     header="Subir Archivo"
     closeOnEscape="true"
@@ -50,21 +51,32 @@
 
       <div class="field">
         <h5 class="font-bold mb-1">Archivo</h5>
-          <FileUpload
-            mode="basic"
-            chooseLabel="Subir Archivo"
-            :customUpload="true"
-            :auto="true"
-            @uploader="onFileSubmit"
-            class="felx-2 "
-          />
+        <FileUpload
+          mode="basic"
+          chooseLabel="Subir Archivo"
+          :customUpload="true"
+          :auto="true"
+          @uploader="onFileSubmit"
+          class="felx-2"
+        />
       </div>
 
       <div class="flex card-container">
         <span class="inline-block flex-1"> </span>
         <div class="inline-block flex-2">
-          <Button v-if="!enableSubmitButton" label="Confirmar" icon="pi pi-check" disabled="disabled"/>
-          <Button v-else label="Confirmar" icon="pi pi-check" @click="onSubmit"/>
+          <!-- TODO: Hacer que el botón solo esté disponible si ya se llenaron todos los campos -->
+          <Button
+            v-if="!enableSubmitButton"
+            label="Confirmar"
+            icon="pi pi-check"
+            disabled="disabled"
+          />
+          <Button
+            v-else
+            label="Confirmar"
+            icon="pi pi-check"
+            @click="onSubmit"
+          />
         </div>
       </div>
     </div>
@@ -105,8 +117,9 @@
           <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
             <h5 class="font-bold mb-1">Area</h5>
             <Dropdown
-              v-model="selectedOption"
-              :options="dropdownOptions"
+              v-model="areaQuery"
+              :options="areaOptions"
+              @change="updateSubjectSelection"
               optionLabel="name"
               placeholder="Area"
               emptyMessage="No hay opciones disponibles"
@@ -116,8 +129,8 @@
           <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
             <h5 class="font-bold mb-1">Materia</h5>
             <Dropdown
-              v-model="selectedOption"
-              :options="dropdownOptions"
+              v-model="subjectQuery"
+              :options="subjectOptions"
               optionLabel="name"
               placeholder="Materia"
               emptyMessage="No hay opciones disponibles"
@@ -127,8 +140,8 @@
           <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
             <h5 class="font-bold mb-1">Tipo</h5>
             <Dropdown
-              v-model="selectedOption"
-              :options="dropdownOptions"
+              v-model="typeQuery"
+              :options="typeOptions"
               optionLabel="name"
               placeholder="Tipo"
               emptyMessage="No hay opciones disponibles"
@@ -138,8 +151,8 @@
           <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
             <h5 class="font-bold mb-1">Ordenar por</h5>
             <Dropdown
-              v-model="selectedOption"
-              :options="dropdownOptions"
+              v-model="sotringQuery"
+              :options="sortingOptions"
               optionLabel="name"
               placeholder="Ordenar por"
               emptyMessage="No hay opciones disponibles"
@@ -160,7 +173,8 @@
 </template>
 
 <script>
-// import { uploadFile } from "../firebase/storage/documents";
+// import { uploadFile } from ".../firebase/storage/documents";
+import { getSubjectsFromArea } from "../../firebase/firestore/areas-subjects";
 
 export default {
   data() {
@@ -172,18 +186,55 @@ export default {
         tipo: "Video",
         fecha: "15/08/2022",
       }),
-      dropdownOptions: [],
       selectedOption: null,
       display: false,
+
+      // Dropdown options
+      areaOptions: [
+        { name: "Ingeniería", code: "ingenieria" },
+        { name: "Ambiente Construido", code: "ambiente-construido" },
+        {
+          name: "Derecho Economía y Relaciones Internacionales",
+          code: "derecho-economia-y-relaciones-internacionales",
+        },
+        { name: "Estudios Creativos", code: "estudios-creativos" },
+        { name: "Negocios", code: "negocios" },
+        { name: "Salud", code: "salud" },
+      ],
+      typeOptions: [
+        { name: "Video", code: "video" },
+        { name: "PDF", code: "pdf" },
+        { name: "Hoja de calculo de Excel", code: "excel" },
+      ],
+      subjectOptions: [],
+      sortingOptions: [
+        { name: "Fecha", code: "date" },
+        { name: "Titulo", code: "date" },
+      ],
+
+      // Search query parameters
       titleQuery: "",
+      areaQuery: "",
+      subjectQuery: "",
+      typeQuery: "",
+      sotringQuery: "",
+
+      // File form data
       fileUpload: null,
+      titleUpload: "",
+      autorUpload: "",
+      areaUpload: "",
+      subjectUpload: "",
     };
   },
   methods: {
-    async onFileSubmit(e) {
+    onFileSubmit(e) {
       const file = e.files[0];
       this.fileUpload = file;
       // await uploadFile(file);
+    },
+    async onSubmit() {
+      // await uploadFile(this.fileUpload );
     },
     onPressModalButton() {
       this.display = true;
@@ -191,12 +242,22 @@ export default {
     onSearch() {
       console.log("Hello from onSearch!", this.titleQuery);
     },
+    async upadteSubjectOptions() {
+      console.log("Area Query: ", this.areaQuery.code);
+      this.subjectOptions = await getSubjectsFromArea(this.areaQuery.code);
+      // console.log(this.subjectOptions)
+    },
   },
   computed: {
     enableSubmitButton() {
       return true;
-    }
-  }
+    },
+  },
+  watch: {
+    areaQuery() {
+      this.upadteSubjectOptions();
+    },
+  },
 };
 </script>
 

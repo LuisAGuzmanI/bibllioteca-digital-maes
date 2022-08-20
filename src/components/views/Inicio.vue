@@ -103,9 +103,9 @@
 </template>
 
 <script>
-import UsuariosService from "../firebase/firestore/usuarios-ep";
+import UsuariosService from "../../firebase/firestore/usuarios-ep";
 
-import { getAsesoriasIntensivas } from "../firebase/firestore/asesorias-intensivas-ep";
+// import { getAsesoriasIntensivas } from "../../firebase/firestore/asesorias-intensivas-ep";
 
 export default {
   data() {
@@ -181,9 +181,9 @@ export default {
     },
     async getAsesoriasList() {
       try {
-        const asesoriasIntensivas = await getAsesoriasIntensivas();
-        this.asesoriasIntensivasList = asesoriasIntensivas;
-        console.log("Asesorias Intensivas: ", this.asesoriasIntensivasList);
+        // const asesoriasIntensivas = await getAsesoriasIntensivas();
+        // this.asesoriasIntensivasList = asesoriasIntensivas;
+        // console.log("Asesorias Intensivas: ", this.asesoriasIntensivasList);
       } catch (error) {
         console.log("Error de Fetching [Asesorías Intensivas]", error);
         this.asesoriasIntensivasList = ["No se pudo cargar el API"];
