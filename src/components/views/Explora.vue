@@ -8,7 +8,7 @@
   >
     <div class="p-fluid w-30rem">
       <div class="field">
-        <h5 class="font-bold mb-1">Titulo</h5>
+        <h5 class="font-bold mb-3">Titulo</h5>
         <InputText
           id="inputtext"
           placeholder="Titulo"
@@ -18,7 +18,7 @@
       </div>
 
       <div class="field">
-        <h5 class="font-bold mb-1">Autor</h5>
+        <h5 class="font-bold mb-3">Autor</h5>
         <InputText
           id="inputtext"
           placeholder="Autor"
@@ -28,7 +28,7 @@
       </div>
 
       <div class="field">
-        <h5 class="font-bold mb-1">Area</h5>
+        <h5 class="font-bold mb-3">Area</h5>
         <Dropdown
           id="dropdown"
           v-model="areaUpload"
@@ -39,18 +39,19 @@
       </div>
 
       <div class="field">
-        <h5 class="font-bold mb-1">Materia</h5>
+        <h5 class="font-bold mb-3">Materia</h5>
         <Dropdown
           id="dropdown"
           v-model="subjectUpload"
           :options="formSubjetOptions"
+          :disabled="formSubjetOptions.length < 1"
           optionLabel="name"
           placeholder="Materia"
         />
       </div>
 
       <div class="field">
-        <h5 class="font-bold mb-1">Archivo</h5>
+        <h5 class="font-bold mb-3">Archivo</h5>
         <FileUpload
           mode="basic"
           chooseLabel="Subir Archivo"
@@ -99,7 +100,7 @@
 
         <div class="grid mt-3 p-0">
           <div class="lg:col-3 sm:col-12 mr-3">
-            <h5 class="font-bold mb-1">Titulo</h5>
+            <h5 class="font-bold mb-2">Titulo</h5>
             <span class="p-input-icon-left w-full">
               <i class="pi pi-search" />
               <div class="p-inputgroup">
@@ -115,7 +116,7 @@
             </span>
           </div>
           <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
-            <h5 class="font-bold mb-1">Area</h5>
+            <h5 class="font-bold mb-2">Area</h5>
             <Dropdown
               v-model="areaQuery"
               :options="areaOptions"
@@ -126,18 +127,19 @@
             />
           </div>
           <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
-            <h5 class="font-bold mb-1">Materia</h5>
+            <h5 class="font-bold mb-2">Materia</h5>
             <Dropdown
               v-model="subjectQuery"
               :options="subjectOptions"
               optionLabel="name"
               placeholder="Materia"
+              :disabled="subjectOptions.length < 1"
               emptyMessage="No hay opciones disponibles"
               class="w-full"
             />
           </div>
           <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
-            <h5 class="font-bold mb-1">Tipo</h5>
+            <h5 class="font-bold mb-2">Tipo</h5>
             <Dropdown
               v-model="typeQuery"
               :options="typeOptions"
@@ -148,7 +150,7 @@
             />
           </div>
           <div class="lg:col-2 md:col-12 sm:col-12 mr-3">
-            <h5 class="font-bold mb-1">Ordenar por</h5>
+            <h5 class="font-bold mb-2">Ordenar por</h5>
             <Dropdown
               v-model="sotringQuery"
               :options="sortingOptions"
@@ -160,11 +162,11 @@
           </div>
         </div>
         <DataTable :value="tableData" class="mt-3">
-          <Column field="titulo" header="Titulo"></Column>
-          <Column field="area" header="Area"></Column>
-          <Column field="materia" header="Materia"></Column>
-          <Column field="tipo" header="Tipo"></Column>
-          <Column field="fecha" header="Fecha Añadido"></Column>
+          <Column field="title" header="Titulo"></Column>
+          <Column field="areaDisplay" header="Area"></Column>
+          <Column field="subjectDisplay" header="Materia"></Column>
+          <Column field="type" header="Tipo"></Column>
+          <Column field="formatedDate" header="Fecha Añadido"></Column>
         </DataTable>
       </div>
     </div>
@@ -172,20 +174,18 @@
 </template>
 
 <script>
+import formatDate from '../../helpers/formatDate'
 import { uploadFile } from "../../firebase/storage/documents";
 import { getSubjectsFromArea } from "../../firebase/firestore/areas-subjects";
-import { createMaterial } from "../../firebase/firestore/material";
+import {
+  getMaterials,
+  createMaterial,
+} from "../../firebase/firestore/material";
 
 export default {
   data() {
     return {
-      tableData: Array(20).fill({
-        titulo: "Formación del Disco Bilaminar",
-        area: "Medicina",
-        materia: "Embriología",
-        tipo: "Video",
-        fecha: "15/08/2022",
-      }),
+      tableData: [],
       selectedOption: null,
       display: false,
 
@@ -228,6 +228,14 @@ export default {
       subjectUpload: "",
     };
   },
+  async created() {
+    this.tableData = await getMaterials();
+    this.tableData.map((element) => {
+      element.formatedDate = formatDate(new Date(element.date.seconds * 1000))
+      return element;
+    });
+    console.log(this.tableData);
+  },
   methods: {
     onFileSubmit(e) {
       const file = e.files[0];
@@ -235,16 +243,20 @@ export default {
       // await uploadFile(file);
     },
     async onSubmit() {
+      console.log(this.fileUpload);
 
       const docRefId = await createMaterial({
         autor: this.autorUpload,
         title: this.titleUpload,
+        type: this.fileUpload.type.split("/")[1],
         area: this.areaUpload.code,
-        subject: this.subjectUpload.code
-      })
+        areaDisplay: this.areaUpload.name,
+        subject: this.subjectUpload.code,
+        subjectDisplay: this.subjectUpload.name,
+      });
 
       await uploadFile(this.fileUpload, docRefId);
-      
+
       this.fileUpload = null;
       this.titleUpload = "";
       this.autorUpload = "";
@@ -252,7 +264,6 @@ export default {
       this.subjectUpload = "";
 
       this.display = false;
-
     },
     onPressModalButton() {
       this.display = true;
@@ -269,7 +280,13 @@ export default {
   },
   computed: {
     enableSubmitButton() {
-      return !!this.fileUpload &&  !!this.titleUpload &&  !!this.autorUpload &&  !!this.areaUpload &&  !!this.subjectUpload;
+      return (
+        !!this.fileUpload &&
+        !!this.titleUpload &&
+        !!this.autorUpload &&
+        !!this.areaUpload &&
+        !!this.subjectUpload
+      );
     },
   },
   watch: {
