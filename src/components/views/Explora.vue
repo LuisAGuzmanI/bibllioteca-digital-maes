@@ -2,7 +2,7 @@
   <!-- TODO: Convertir este Dialog en un componente separado -->
   <Dialog
     header="Subir Archivo"
-    closeOnEscape="true"
+    :closeOnEscape="true"
     v-model:visible="display"
     modal="modal"
   >
@@ -13,7 +13,7 @@
           id="inputtext"
           placeholder="Titulo"
           type="text"
-          v-model="value1"
+          v-model="titleUpload"
         />
       </div>
 
@@ -23,7 +23,7 @@
           id="inputtext"
           placeholder="Autor"
           type="text"
-          v-model="value1"
+          v-model="autorUpload"
         />
       </div>
 
@@ -31,8 +31,8 @@
         <h5 class="font-bold mb-1">Area</h5>
         <Dropdown
           id="dropdown"
-          v-model="value8"
-          :options="dropdownOptions"
+          v-model="areaUpload"
+          :options="areaOptions"
           optionLabel="name"
           placeholder="Area"
         />
@@ -42,8 +42,8 @@
         <h5 class="font-bold mb-1">Materia</h5>
         <Dropdown
           id="dropdown"
-          v-model="value8"
-          :options="dropdownOptions"
+          v-model="subjectUpload"
+          :options="formSubjetOptions"
           optionLabel="name"
           placeholder="Materia"
         />
@@ -119,7 +119,6 @@
             <Dropdown
               v-model="areaQuery"
               :options="areaOptions"
-              @change="updateSubjectSelection"
               optionLabel="name"
               placeholder="Area"
               emptyMessage="No hay opciones disponibles"
@@ -173,8 +172,9 @@
 </template>
 
 <script>
-// import { uploadFile } from ".../firebase/storage/documents";
+import { uploadFile } from "../../firebase/storage/documents";
 import { getSubjectsFromArea } from "../../firebase/firestore/areas-subjects";
+import { createMaterial } from "../../firebase/firestore/material";
 
 export default {
   data() {
@@ -207,6 +207,7 @@ export default {
         { name: "Hoja de calculo de Excel", code: "excel" },
       ],
       subjectOptions: [],
+      formSubjetOptions: [],
       sortingOptions: [
         { name: "Fecha", code: "date" },
         { name: "Titulo", code: "date" },
@@ -234,7 +235,24 @@ export default {
       // await uploadFile(file);
     },
     async onSubmit() {
-      // await uploadFile(this.fileUpload );
+
+      const docRefId = await createMaterial({
+        autor: this.autorUpload,
+        title: this.titleUpload,
+        area: this.areaUpload.code,
+        subject: this.subjectUpload.code
+      })
+
+      await uploadFile(this.fileUpload, docRefId);
+      
+      this.fileUpload = null;
+      this.titleUpload = "";
+      this.autorUpload = "";
+      this.areaUpload = "";
+      this.subjectUpload = "";
+
+      this.display = false;
+
     },
     onPressModalButton() {
       this.display = true;
@@ -243,19 +261,23 @@ export default {
       console.log("Hello from onSearch!", this.titleQuery);
     },
     async upadteSubjectOptions() {
-      console.log("Area Query: ", this.areaQuery.code);
       this.subjectOptions = await getSubjectsFromArea(this.areaQuery.code);
-      // console.log(this.subjectOptions)
+    },
+    async upadteFormSubjectOptions() {
+      this.formSubjetOptions = await getSubjectsFromArea(this.areaUpload.code);
     },
   },
   computed: {
     enableSubmitButton() {
-      return true;
+      return !!this.fileUpload &&  !!this.titleUpload &&  !!this.autorUpload &&  !!this.areaUpload &&  !!this.subjectUpload;
     },
   },
   watch: {
     areaQuery() {
       this.upadteSubjectOptions();
+    },
+    areaUpload() {
+      this.upadteFormSubjectOptions();
     },
   },
 };
