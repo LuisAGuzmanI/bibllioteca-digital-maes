@@ -21,12 +21,11 @@ export const getFileUrl = async (storageURI) => {
 
     await getDownloadURL(fileRef)
         .then((url) => {
-            // `url` is the download URL for 'images/stars.jpg'
             fileUrl = url;
         })
         .catch((error) => {
             // Handle any errors
-            console.log(error);
+            console.error(error);
         });
 
     return fileUrl;

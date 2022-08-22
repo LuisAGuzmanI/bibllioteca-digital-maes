@@ -3,7 +3,7 @@
   <Dialog
     header="Subir Archivo"
     :closeOnEscape="true"
-    v-model:visible="display"
+    v-model:visible="displayUpload"
     modal="modal"
   >
     <div class="p-fluid w-30rem">
@@ -81,6 +81,39 @@
       </div>
     </div>
   </Dialog>
+
+  <Dialog
+    :header="selectedRow.title"
+    :closeOnEscape="true"
+    :dismissableMask="true"
+    :maximizable="true"
+    v-model:visible="displayMaterial"
+    modal="modal"
+    appendTo="body"
+  >
+    <div class="p-fluid">
+      <div class="card-container flex">
+        <div class="inline-block flex-1">
+          <p class="font-bold">{{ this.selectedRow.subjectDisplay }}</p>
+        </div>
+        <div class="inline-block flex-2">
+          <p class="font-bold">
+            Por: {{ this.selectedRow.autor }} -
+            {{ this.selectedRow.formatedDate }}
+          </p>
+        </div>
+      </div>
+      <div class="card-container">
+        
+      </div>
+
+      <video width="500" height="300" controls>
+        <source :src="this.selectedRow.fileUrl" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </Dialog>
+
   <div class="grid">
     <div class="col-12">
       <div class="card mb-3">
@@ -167,12 +200,6 @@
           <Column field="subjectDisplay" header="Materia"></Column>
           <Column field="type" header="Tipo"></Column>
         </DataTable>
-        <div v-if="selectedRow !== null">
-          <video width="320" height="240" controls>
-            <source src="https://firebasestorage.googleapis.com/v0/b/biblioteca-digital-maes.appspot.com/o/redditsave.com_se_tenia_que_hacer-v98jbg0dswi91.mp4-f703dd2b-cb9e-4ef2-840f-e0b8d8bfadaa?alt=media&token=bd7dea2b-3978-44c4-8923-66b772356a3c" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
       </div>
     </div>
   </div>
@@ -191,10 +218,19 @@ export default {
   data() {
     return {
       tableData: [],
-      selectedRow: null,
+      displayMaterial: false,
+      selectedRow: {
+        autor: "",
+        title: "",
+        type: "",
+        area: "",
+        subject: "",
+        areaDisplay: "",
+        subjectDisplay: "",
+        fileUrl: "",
+      },
 
-      selectedOption: null,
-      display: false,
+      displayUpload: false,
 
       // Dropdown options
       areaOptions: [
@@ -265,10 +301,10 @@ export default {
       this.areaUpload = "";
       this.subjectUpload = "";
 
-      this.display = false;
+      this.displayUpload = false;
     },
     onPressModalButton() {
-      this.display = true;
+      this.displayUpload = true;
     },
     onSearch() {
       console.log("Hello from onSearch!", this.titleQuery);
@@ -300,6 +336,7 @@ export default {
     },
     selectedRow() {
       console.log(this.selectedRow.fileUrl);
+      this.displayMaterial = true;
     },
   },
 };
