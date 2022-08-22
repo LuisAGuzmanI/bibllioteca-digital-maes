@@ -9,9 +9,7 @@ import {
 const materialColletion = collection(firestoreDB, "material");
 
 export async function createMaterial(data) {
-
-    // console.log()
-
+    
     const docRef = await addDoc(materialColletion, {
         autor: data.autor,
         title: data.title,
@@ -21,7 +19,7 @@ export async function createMaterial(data) {
         subjectDisplay: data.subjectDisplay,
         type: data.type,
         date: Timestamp.now(),
-        storageRef: data.storageRef,
+        fileUrl: data.fileUrl,
     });
 
     return docRef.id;
@@ -30,6 +28,6 @@ export async function createMaterial(data) {
 export async function getMaterials() {
     const materialsSnapshot = await getDocs(materialColletion);
     const materialList = materialsSnapshot.docs.map(doc => doc.data());
-    console.log(materialList)
+    // console.log(materialList)
     return materialList;
 }

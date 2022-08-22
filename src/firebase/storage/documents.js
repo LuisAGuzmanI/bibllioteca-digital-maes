@@ -28,7 +28,7 @@ export const getFileUrl = async (storageURI) => {
             // Handle any errors
             console.log(error);
         });
-        
+
     return fileUrl;
 
 }
