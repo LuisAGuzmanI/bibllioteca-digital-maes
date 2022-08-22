@@ -107,7 +107,7 @@
         
       </div>
 
-      <video width="500" height="300" controls>
+      <video width="888" height="500" controls>
         <source :src="this.selectedRow.fileUrl" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
