@@ -86,13 +86,12 @@
     :header="selectedRow.title"
     :closeOnEscape="true"
     :dismissableMask="true"
-    :maximizable="true"
     v-model:visible="displayMaterial"
     modal="modal"
     appendTo="body"
   >
     <div class="p-fluid">
-      <div class="card-container flex">
+      <div class="card-container flex mb-3">
         <div class="inline-block flex-1">
           <p class="font-bold">{{ this.selectedRow.subjectDisplay }}</p>
         </div>
@@ -102,9 +101,6 @@
             {{ this.selectedRow.formatedDate }}
           </p>
         </div>
-      </div>
-      <div class="card-container">
-        
       </div>
 
       <video width="888" height="500" controls>
@@ -209,10 +205,7 @@
 import formatDate from "../../helpers/formatDate";
 import { uploadFile, getFileUrl } from "../../firebase/storage/documents";
 import { getSubjectsFromArea } from "../../firebase/firestore/areas-subjects";
-import {
-  getMaterials,
-  createMaterial,
-} from "../../firebase/firestore/material";
+import { getMaterials, createMaterial } from "../../firebase/firestore/material";
 
 export default {
   data() {

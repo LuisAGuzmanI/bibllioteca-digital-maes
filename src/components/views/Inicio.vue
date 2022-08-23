@@ -1,5 +1,9 @@
 <template>
-  <div class="grid">
+
+  <div class="flex align-content-center h-full" style="min-height: 300px">
+    <h1 class="flex align-items-center justify-content-center w-full">!En construcción! ✌</h1>
+  </div>
+  <!-- <div class="grid">
     <div class="col-12 xl:col-6">
       <div class="card mb-3">
         <h2 class="font-bold">Vistos recientemente</h2>
@@ -41,7 +45,7 @@
                 <h3 class="text-5xl">{{ titulo }}</h3>
                 <h6 class="text-2xl">{{ materia }} - *Nombre de la materia*</h6>
                 <h6 class="text-2xl">{{ dateToStringMMDD(fecha.toDate()) }}</h6>
-                <!-- TODO: Agregar el titulo de la materia -->
+                 TODO: Agregar el titulo de la materia 
               </div>
               <div class="col-2 icon-div-center">
                 <i v-if="true" class="pi pi-check" style="font-size: 3rem"></i>
@@ -99,98 +103,98 @@
         </DataTable>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import UsuariosService from "../../firebase/firestore/usuarios-ep";
+// import UsuariosService from "../../firebase/firestore/usuarios-ep";
 
 // import { getAsesoriasIntensivas } from "../../firebase/firestore/asesorias-intensivas-ep";
 
 export default {
-  data() {
-    return {
-      archivosVistosRecientemente: [
-        "Notas Embriología",
-        "Video Asesoría Anatomía",
-        "PowerPoint Asesoría Anatomía",
-        "Cheatsheet Anatomía",
-        "Video Asesoría Embriología",
-      ],
-      responsiveOptionsVistosRecientemente: [
-        { breakpoint: "1300px", numVisible: 2, numScroll: 1 },
-        { breakpoint: "600px", numVisible: 1, numScroll: 1 },
-      ],
-      listaAsesoriasIntensivas: [],
-      basicData: {
-        labels: [
-          "Enero",
-          "Febrero",
-          "Marzo",
-          "Abril",
-          "Mayo",
-          "Junio",
-          "Julio",
-        ],
-        datasets: [
-          {
-            label: "Recursos visitados",
-            data: [65, 59, 80, 81, 56, 55, 40],
-            fill: true,
-            borderColor: "#42A5F5",
-            tension: 0.4,
-          },
-        ],
-      },
-      maesDisponibles: Array(10).fill({
-        nombre: "Luis Ángel Guzmán Iribe",
-        semestre: 4,
-        programa: "ITC",
-      }),
-      asesoriasIntensivasList: null,
-      usuariosService: null,
-    };
-  },
-  created() {
-    this.usuariosService = new UsuariosService();
-    this.getAsesoriasList();
-  },
-  methods: {
-    dateToStringMMDD(fecha) {
-      const meses = [
-        "Enero",
-        "Febrero",
-        "Marzo",
-        "Abril",
-        "Mayo",
-        "Junio",
-        "Julio",
-        "Agosto",
-        "Septiembre",
-        "Octubre",
-        "Noviembre",
-        "Diciembre",
-      ];
-      // const fecha = new Date(fechaInt*1000);
-      console.log(fecha);
-      return `${fecha.getDay()} / ${meses[fecha.getMonth()]} - ${
-        fecha.getHours() > 12 ? fecha.getHours() - 12 : fecha.getHours()
-      }:${
-        fecha.getMinutes() < 10 ? `0${fecha.getMinutes()}` : fecha.getMinutes()
-      } ${fecha.getHours() > 12 ? "PM" : "AM"}`;
-    },
-    async getAsesoriasList() {
-      try {
-        // const asesoriasIntensivas = await getAsesoriasIntensivas();
-        // this.asesoriasIntensivasList = asesoriasIntensivas;
-        // console.log("Asesorias Intensivas: ", this.asesoriasIntensivasList);
-      } catch (error) {
-        console.log("Error de Fetching [Asesorías Intensivas]", error);
-        this.asesoriasIntensivasList = ["No se pudo cargar el API"];
-      }
-      // TODO: Una vez que se tiene la información de las asesorías. Hacer una función para generar el incono para agregar si no se ha agendado.
-    },
-  },
+  // data() {
+  //   return {
+  //     archivosVistosRecientemente: [
+  //       "Notas Embriología",
+  //       "Video Asesoría Anatomía",
+  //       "PowerPoint Asesoría Anatomía",
+  //       "Cheatsheet Anatomía",
+  //       "Video Asesoría Embriología",
+  //     ],
+  //     responsiveOptionsVistosRecientemente: [
+  //       { breakpoint: "1300px", numVisible: 2, numScroll: 1 },
+  //       { breakpoint: "600px", numVisible: 1, numScroll: 1 },
+  //     ],
+  //     listaAsesoriasIntensivas: [],
+  //     basicData: {
+  //       labels: [
+  //         "Enero",
+  //         "Febrero",
+  //         "Marzo",
+  //         "Abril",
+  //         "Mayo",
+  //         "Junio",
+  //         "Julio",
+  //       ],
+  //       datasets: [
+  //         {
+  //           label: "Recursos visitados",
+  //           data: [65, 59, 80, 81, 56, 55, 40],
+  //           fill: true,
+  //           borderColor: "#42A5F5",
+  //           tension: 0.4,
+  //         },
+  //       ],
+  //     },
+  //     maesDisponibles: Array(10).fill({
+  //       nombre: "Luis Ángel Guzmán Iribe",
+  //       semestre: 4,
+  //       programa: "ITC",
+  //     }),
+  //     asesoriasIntensivasList: null,
+  //     usuariosService: null,
+  //   };
+  // },
+  // created() {
+  //   this.usuariosService = new UsuariosService();
+  //   this.getAsesoriasList();
+  // },
+  // methods: {
+  //   dateToStringMMDD(fecha) {
+  //     const meses = [
+  //       "Enero",
+  //       "Febrero",
+  //       "Marzo",
+  //       "Abril",
+  //       "Mayo",
+  //       "Junio",
+  //       "Julio",
+  //       "Agosto",
+  //       "Septiembre",
+  //       "Octubre",
+  //       "Noviembre",
+  //       "Diciembre",
+  //     ];
+  //     // const fecha = new Date(fechaInt*1000);
+  //     console.log(fecha);
+  //     return `${fecha.getDay()} / ${meses[fecha.getMonth()]} - ${
+  //       fecha.getHours() > 12 ? fecha.getHours() - 12 : fecha.getHours()
+  //     }:${
+  //       fecha.getMinutes() < 10 ? `0${fecha.getMinutes()}` : fecha.getMinutes()
+  //     } ${fecha.getHours() > 12 ? "PM" : "AM"}`;
+  //   },
+  //   async getAsesoriasList() {
+  //     try {
+  //       // const asesoriasIntensivas = await getAsesoriasIntensivas();
+  //       // this.asesoriasIntensivasList = asesoriasIntensivas;
+  //       // console.log("Asesorias Intensivas: ", this.asesoriasIntensivasList);
+  //     } catch (error) {
+  //       console.log("Error de Fetching [Asesorías Intensivas]", error);
+  //       this.asesoriasIntensivasList = ["No se pudo cargar el API"];
+  //     }
+  //     // TODO: Una vez que se tiene la información de las asesorías. Hacer una función para generar el incono para agregar si no se ha agendado.
+  //   },
+  // },
 };
 </script>
 
