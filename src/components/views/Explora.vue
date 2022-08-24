@@ -177,6 +177,21 @@
               class="w-full"
             />
           </div>
+          <div class="lg:col-2 md:col-12 sm:col-12">
+            <h5 class="font-bold mb-2">Filtros</h5>
+            <Button
+              v-if="!areFilters"
+              label="Borrar Filtros"
+              icon="pi pi-times"
+              disabled="disabled"
+            />
+            <Button
+              v-else
+              label="Borrar Filtros"
+              icon="pi pi-times"
+              @click="eraseFilters"
+            />
+          </div>
         </div>
         <DataTable
           :value="displayTableData"
@@ -244,7 +259,6 @@ export default {
       typeOptions: [
         { name: "Video", code: "video" },
         { name: "PDF", code: "pdf" },
-        { name: "Hoja de calculo de Excel", code: "excel" },
       ],
       subjectOptions: [],
       formSubjetOptions: [],
@@ -314,6 +328,13 @@ export default {
         return row.subject == this.subjectQuery;
       });
     },
+    eraseFilters(){
+      this.titleQuery =  "";
+      this.areaQuery =  "";
+      this.subjectQuery =  "";
+      this.typeQuery =  "";
+      this.displayTableData = this.tableData;
+    }
   },
   computed: {
     enableSubmitButton() {
@@ -325,23 +346,38 @@ export default {
         !!this.subjectUpload
       );
     },
+    areFilters() {
+      console.log(!!this.areaQuery || !!this.subjectQuery || !!this.typeQuery || !!this.titleQuery)
+      return (
+        !!this.areaQuery ||
+        !!this.subjectQuery ||
+        !!this.typeQuery ||
+        !!this.titleQuery
+      );
+    },
   },
   watch: {
     areaQuery() {
-      this.displayTableData = this.tableData.filter((row) => {
-        return row.area == this.areaQuery.code;
-      });
-      this.upadteSubjectOptions();
+      if(this.areaQuery !== ""){
+        this.displayTableData = this.tableData.filter((row) => {
+          return row.area == this.areaQuery.code;
+        });
+        this.upadteSubjectOptions();
+      }
     },
     subjectQuery() {
-      this.displayTableData = this.tableData.filter((row) => {
-        return row.subject == this.subjectQuery.name;
-      });
+      if(this.subjectQuery !== ""){
+        this.displayTableData = this.tableData.filter((row) => {
+          return row.subject == this.subjectQuery.name;
+        });
+      }
     },
     typeQuery() {
-      this.displayTableData = this.tableData.filter((row) => {
-        return row.type == this.typeQuery.name;
-      });
+      if(this.typeQuery !== ""){
+        this.displayTableData = this.tableData.filter((row) => {
+          return row.type == this.typeQuery.name;
+        });
+      }
     },
     areaUpload() {
       this.upadteFormSubjectOptions();
