@@ -202,7 +202,7 @@
 </template>
 
 <script>
-import formatDate from "../../helpers/formatDate";
+// import formatDate from "../../helpers/formatDate";
 import { uploadFile, getFileUrl } from "../../firebase/storage/documents";
 import { getSubjectsFromArea } from "../../firebase/firestore/areas-subjects";
 import { getMaterials, createMaterial } from "../../firebase/firestore/material";
@@ -261,10 +261,6 @@ export default {
   },
   async created() {
     this.tableData = await getMaterials();
-    this.tableData.map((element) => {
-      element.formatedDate = formatDate(new Date(element.date.seconds * 1000));
-      return element;
-    });
   },
   methods: {
     onFileSubmit(e) {
