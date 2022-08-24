@@ -179,7 +179,7 @@
           </div>
         </div>
         <DataTable
-          :value="tableData"
+          :value="displayTableData"
           v-model:selection="selectedRow"
           selectionMode="single"
           stripedRows
@@ -205,12 +205,16 @@
 // import formatDate from "../../helpers/formatDate";
 import { uploadFile, getFileUrl } from "../../firebase/storage/documents";
 import { getSubjectsFromArea } from "../../firebase/firestore/areas-subjects";
-import { getMaterials, createMaterial } from "../../firebase/firestore/material";
+import {
+  getMaterials,
+  createMaterial,
+} from "../../firebase/firestore/material";
 
 export default {
   data() {
     return {
       tableData: [],
+      displayTableData: [],
       displayMaterial: false,
       selectedRow: {
         autor: "",
@@ -261,6 +265,7 @@ export default {
   },
   async created() {
     this.tableData = await getMaterials();
+    this.displayTableData = this.tableData;
   },
   methods: {
     onFileSubmit(e) {
@@ -276,7 +281,7 @@ export default {
       await createMaterial({
         autor: this.autorUpload,
         title: this.titleUpload,
-        type: this.fileUpload.type.split("/")[1],
+        type: this.fileUpload.type,
         area: this.areaUpload.code,
         subject: this.subjectUpload.code,
         areaDisplay: this.areaUpload.name,
@@ -304,6 +309,11 @@ export default {
     async upadteFormSubjectOptions() {
       this.formSubjetOptions = await getSubjectsFromArea(this.areaUpload.code);
     },
+    onAplyFilterArea() {
+      this.displayTableData.filter((row) => {
+        return row.subject == this.subjectQuery;
+      });
+    },
   },
   computed: {
     enableSubmitButton() {
@@ -318,7 +328,20 @@ export default {
   },
   watch: {
     areaQuery() {
+      this.displayTableData = this.tableData.filter((row) => {
+        return row.area == this.areaQuery.code;
+      });
       this.upadteSubjectOptions();
+    },
+    subjectQuery() {
+      this.displayTableData = this.tableData.filter((row) => {
+        return row.subject == this.subjectQuery.name;
+      });
+    },
+    typeQuery() {
+      this.displayTableData = this.tableData.filter((row) => {
+        return row.type == this.typeQuery.name;
+      });
     },
     areaUpload() {
       this.upadteFormSubjectOptions();

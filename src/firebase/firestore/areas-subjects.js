@@ -13,7 +13,7 @@ export async function getSubjectsFromArea(area) {
         subjects.push({ name: doc.data().name, code: doc.id })
     });
 
-    console.log(subjects);
+    // console.log(subjects);
 
     subjects.sort((a, b) => {
         let fa = a.name.toLowerCase(),
@@ -28,7 +28,7 @@ export async function getSubjectsFromArea(area) {
         return 0;
     });
 
-    console.log(subjects);
+    // console.log(subjects);
 
     return subjects;
 

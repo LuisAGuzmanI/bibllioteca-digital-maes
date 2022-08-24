@@ -6,6 +6,7 @@ import {
     Timestamp
 } from "firebase/firestore";
 import formatDate from '../../helpers/formatDate';
+import getFormatedFileType from '../../helpers/getFormatedFileType';
 
 const materialColletion = collection(firestoreDB, "material");
 
@@ -18,7 +19,7 @@ export async function createMaterial(data) {
         subject: data.subject,
         areaDisplay: data.areaDisplay,
         subjectDisplay: data.subjectDisplay,
-        type: data.type,
+        type: getFormatedFileType(data.type),
         date: Timestamp.now(),
         fileUrl: data.fileUrl,
     });
