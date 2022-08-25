@@ -1,88 +1,10 @@
 <template>
   <!-- TODO: Convertir este Dialog en un componente separado -->
-  <Dialog
-    header="Subir Archivo"
-    :closeOnEscape="true"
-    v-model:visible="displayUpload"
-    modal="modal"
-  >
-    <div class="p-fluid w-30rem">
-      <div class="field">
-        <h5 class="font-bold mb-3">Titulo</h5>
-        <InputText
-          id="inputtext"
-          placeholder="Titulo"
-          type="text"
-          v-model="titleUpload"
-        />
-      </div>
-
-      <div class="field">
-        <h5 class="font-bold mb-3">Autor</h5>
-        <InputText
-          id="inputtext"
-          placeholder="Autor"
-          type="text"
-          v-model="autorUpload"
-        />
-      </div>
-
-      <div class="field">
-        <h5 class="font-bold mb-3">Area</h5>
-        <Dropdown
-          id="dropdown"
-          v-model="areaUpload"
-          :options="areaOptions"
-          optionLabel="name"
-          placeholder="Area"
-        />
-      </div>
-
-      <div class="field">
-        <h5 class="font-bold mb-3">Materia</h5>
-        <Dropdown
-          id="dropdown"
-          v-model="subjectUpload"
-          :options="formSubjetOptions"
-          :disabled="formSubjetOptions.length < 1"
-          optionLabel="name"
-          placeholder="Materia"
-        />
-      </div>
-
-      <div class="field">
-        <h5 class="font-bold mb-3">Archivo</h5>
-        <FileUpload
-          mode="basic"
-          chooseLabel="Subir Archivo"
-          :customUpload="true"
-          :auto="true"
-          @uploader="onFileSubmit"
-          class="felx-2"
-        />
-        <P class="font-medium text-green-600" v-if="!!fileUpload">Cargado exitosamente: {{fileUpload.name}}</P>
-      </div>
-
-      <div class="flex card-container">
-        <span class="inline-block flex-1"> </span>
-        <div class="inline-block flex-2">
-          <Button
-            v-if="!enableSubmitButton"
-            label="Confirmar"
-            icon="pi pi-check"
-            disabled="disabled"
-          />
-          <Button
-            v-else
-            label="Confirmar"
-            icon="pi pi-check"
-            @click="onSubmit"
-            :loading="isLoadingSubmitButton"
-          />
-        </div>
-      </div>
-    </div>
-  </Dialog>
+  <UploadDialog
+    @colseUploadDialog="colseUploadDialog"
+    :isActiveProp="displayUpload"
+    :areaOptions="areaOptions"
+  />
 
   <Dialog
     :header="selectedRow.title"
@@ -139,7 +61,7 @@
                   type="text"
                   v-model="titleQuery"
                   @keyup.enter="onSearch"
-                  placeholder="Formación del Disco Bilaminar"
+                  placeholder="Titulo/Tema del archivo"
                   class="w-full"
                 />
               </div>
@@ -219,15 +141,18 @@
 </template>
 
 <script>
-// import formatDate from "../../helpers/formatDate";
-import { uploadFile, getFileUrl } from "../../firebase/storage/documents";
+// Component Imports
+import UploadDialog from "../sub_components/UploadDialog.vue";
+
+// Firebase Imports
+
 import { getSubjectsFromArea } from "../../firebase/firestore/areas-subjects";
-import {
-  getMaterials,
-  createMaterial,
-} from "../../firebase/firestore/material";
+import { getMaterials } from "../../firebase/firestore/material";
 
 export default {
+  components: {
+    UploadDialog,
+  },
   data() {
     return {
       tableData: [],
@@ -263,22 +188,12 @@ export default {
         { name: "PDF", code: "pdf" },
       ],
       subjectOptions: [],
-      formSubjetOptions: [],
 
       // Search query parameters
       titleQuery: "",
       areaQuery: "",
       subjectQuery: "",
       typeQuery: "",
-
-      // File form data
-      fileUpload: null,
-      titleUpload: "",
-      autorUpload: "",
-      areaUpload: "",
-      subjectUpload: "",
-
-      isLoadingSubmitButton: false,
     };
   },
   async created() {
@@ -286,40 +201,6 @@ export default {
     this.displayTableData = this.tableData;
   },
   methods: {
-    onFileSubmit(e) {
-      const file = e.files[0];
-      console.log(file.name)
-      this.fileUpload = file;
-    },
-    async onSubmit() {
-
-      this.isLoadingSubmitButton = true;
-
-      const strgRef = await uploadFile(this.fileUpload);
-
-      const fileUrl = await getFileUrl(strgRef);
-
-      await createMaterial({
-        autor: this.autorUpload,
-        title: this.titleUpload,
-        type: this.fileUpload.type,
-        area: this.areaUpload.code,
-        subject: this.subjectUpload.code,
-        areaDisplay: this.areaUpload.name,
-        subjectDisplay: this.subjectUpload.name,
-        fileUrl,
-      });
-
-      this.fileUpload = null;
-      this.titleUpload = "";
-      this.autorUpload = "";
-      this.areaUpload = "";
-      this.subjectUpload = "";
-
-
-      this.isLoadingSubmitButton = false;
-      this.displayUpload = false;
-    },
     onPressModalButton() {
       this.displayUpload = true;
     },
@@ -329,34 +210,30 @@ export default {
     async upadteSubjectOptions() {
       this.subjectOptions = await getSubjectsFromArea(this.areaQuery.code);
     },
-    async upadteFormSubjectOptions() {
-      this.formSubjetOptions = await getSubjectsFromArea(this.areaUpload.code);
-    },
     onAplyFilterArea() {
       this.displayTableData.filter((row) => {
         return row.subject == this.subjectQuery;
       });
     },
-    eraseFilters(){
-      this.titleQuery =  "";
-      this.areaQuery =  "";
-      this.subjectQuery =  "";
-      this.typeQuery =  "";
+    eraseFilters() {
+      this.titleQuery = "";
+      this.areaQuery = "";
+      this.subjectQuery = "";
+      this.typeQuery = "";
       this.displayTableData = this.tableData;
-    }
+    },
+    colseUploadDialog() {
+      this.displayUpload = false;
+    },
   },
   computed: {
-    enableSubmitButton() {
-      return (
-        !!this.fileUpload &&
-        !!this.titleUpload &&
-        !!this.autorUpload &&
-        !!this.areaUpload &&
-        !!this.subjectUpload
-      );
-    },
     areFilters() {
-      console.log(!!this.areaQuery || !!this.subjectQuery || !!this.typeQuery || !!this.titleQuery)
+      console.log(
+        !!this.areaQuery ||
+          !!this.subjectQuery ||
+          !!this.typeQuery ||
+          !!this.titleQuery
+      );
       return (
         !!this.areaQuery ||
         !!this.subjectQuery ||
@@ -367,7 +244,7 @@ export default {
   },
   watch: {
     areaQuery() {
-      if(this.areaQuery !== ""){
+      if (this.areaQuery !== "") {
         this.displayTableData = this.tableData.filter((row) => {
           return row.area == this.areaQuery.code;
         });
@@ -375,21 +252,18 @@ export default {
       }
     },
     subjectQuery() {
-      if(this.subjectQuery !== ""){
+      if (this.subjectQuery !== "") {
         this.displayTableData = this.tableData.filter((row) => {
           return row.subject == this.subjectQuery.name;
         });
       }
     },
     typeQuery() {
-      if(this.typeQuery !== ""){
+      if (this.typeQuery !== "") {
         this.displayTableData = this.tableData.filter((row) => {
           return row.type == this.typeQuery.name;
         });
       }
-    },
-    areaUpload() {
-      this.upadteFormSubjectOptions();
     },
     selectedRow() {
       console.log(this.selectedRow.fileUrl);
