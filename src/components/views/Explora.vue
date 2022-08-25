@@ -60,6 +60,7 @@
           @uploader="onFileSubmit"
           class="felx-2"
         />
+        <P class="font-medium text-green-600" v-if="!!fileUpload">Cargado exitosamente: {{fileUpload.name}}</P>
       </div>
 
       <div class="flex card-container">
@@ -76,6 +77,7 @@
             label="Confirmar"
             icon="pi pi-check"
             @click="onSubmit"
+            :loading="isLoadingSubmitButton"
           />
         </div>
       </div>
@@ -275,6 +277,8 @@ export default {
       autorUpload: "",
       areaUpload: "",
       subjectUpload: "",
+
+      isLoadingSubmitButton: false,
     };
   },
   async created() {
@@ -284,10 +288,13 @@ export default {
   methods: {
     onFileSubmit(e) {
       const file = e.files[0];
+      console.log(file.name)
       this.fileUpload = file;
-      // await uploadFile(file);
     },
     async onSubmit() {
+
+      this.isLoadingSubmitButton = true;
+
       const strgRef = await uploadFile(this.fileUpload);
 
       const fileUrl = await getFileUrl(strgRef);
@@ -309,6 +316,8 @@ export default {
       this.areaUpload = "";
       this.subjectUpload = "";
 
+
+      this.isLoadingSubmitButton = false;
       this.displayUpload = false;
     },
     onPressModalButton() {
