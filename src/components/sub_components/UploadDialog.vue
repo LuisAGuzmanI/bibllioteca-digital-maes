@@ -52,17 +52,26 @@
 
       <div class="field">
         <h5 class="font-bold mb-3">Archivo</h5>
-        <FileUpload
-          mode="basic"
-          chooseLabel="Subir Archivo"
-          :customUpload="true"
-          :auto="true"
-          @uploader="onFileSubmit"
-          class="felx-2"
-        />
-        <P class="font-medium text-green-600" v-if="!!fileUpload"
-          >Cargado exitosamente: {{ fileUpload.name }}</P
-        >
+        <div class="inline-block">
+          <FileUpload
+            mode="basic"
+            chooseLabel="Subir Archivo"
+            :customUpload="true"
+            :auto="true"
+            @uploader="onFileSubmit"
+          />
+        </div>
+        <div class="inline-block align-items-center">
+          <Tag
+            v-if="!!fileUpload"
+            class="ml-3"
+            icon="pi pi-check"
+            severity="success"
+            value="Cargado Exitosamente"
+          ></Tag>
+        </div>
+
+        <P v-if="!!fileUpload" class="font-medium">{{ fileUpload.name }}</P>
       </div>
 
       <div class="flex card-container">
