@@ -27,6 +27,7 @@
     </div>
   </Dialog>
 
+  <!-- TODO: Agregar opción para buscar por titulo -->
   <div class="grid mt-3 p-0">
     <div class="lg:col-3 sm:col-12 mr-3">
       <h5 class="font-bold mb-2">Titulo</h5>
@@ -38,7 +39,7 @@
             type="text"
             v-model="titleQuery"
             @keyup.enter="onSearch"
-            placeholder="Titulo/Tema del archivo"
+            placeholder="Titulo / Tema del archivo"
             class="w-full"
           />
         </div>
@@ -148,6 +149,7 @@
 // Firebase Imports
 import { getSubjectsFromArea } from "../../firebase/firestore/areas-subjects";
 import { getMaterials } from "../../firebase/firestore/material";
+import normalizeString from "../../helpers/normalizeString"
 
 export default {
   props: {
@@ -191,7 +193,12 @@ export default {
   },
   methods: {
     onSearch() {
-      console.log("Hello from onSearch!", this.titleQuery);
+      if (!this.titleQuery) {
+        return;
+      }
+      this.displayTableData = this.displayTableData.filter((row) =>
+        normalizeString(row.title).includes(normalizeString(this.titleQuery))
+      );
     },
     async upadteSubjectOptions() {
       this.subjectOptions = await getSubjectsFromArea(this.areaQuery.code);
