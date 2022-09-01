@@ -175,7 +175,7 @@ export default {
       // Dropdown options
       typeOptions: [
         { name: "Video", code: "video" },
-        { name: "PDF", code: "pdf" },
+        // { name: "PDF", code: "pdf" },
       ],
       subjectOptions: [],
 

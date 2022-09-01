@@ -1,5 +1,4 @@
 <template>
-  <!-- <h1 v-if="isActive">Hello from UploadDialog! 👌</h1> -->
   <Dialog
     header="Subir Archivo"
     v-model:visible="isActive"
@@ -58,6 +57,7 @@
             chooseLabel="Subir Archivo"
             :customUpload="true"
             :auto="true"
+            accept="video/*"
             @uploader="onFileSubmit"
           />
         </div>
@@ -129,7 +129,7 @@ export default {
     },
     onFileSubmit(e) {
       const file = e.files[0];
-      console.log(file.name);
+      console.log(file);
       this.fileUpload = file;
     },
     async onSubmit() {
