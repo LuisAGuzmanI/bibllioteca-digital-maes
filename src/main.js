@@ -100,6 +100,7 @@ import BlockViewer from './BlockViewer';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';  
 import { getStorage } from "firebase/storage";
+import { getAuth } from "firebase/auth";
 
 router.beforeEach(function(to, from, next) {
     window.scrollTo(0, 0);
@@ -121,6 +122,8 @@ export const firestoreDB = getFirestore(firebaseApp);
 
 // Initialize Cloud Storage and get a reference to the service
 export const storage = getStorage(firebaseApp);
+
+export const auth = getAuth(firebaseApp);
 
 const app = createApp(AppWrapper);
 

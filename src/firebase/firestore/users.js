@@ -1,48 +1,44 @@
 import { firestoreDB } from '../../main';
-import {  
-    // query, 
-    // where, 
-    collection,
+import {
+    // collection,
     doc,
-    getDoc, 
-    getDocs, 
-    addDoc,
-    // updateDoc 
+    setDoc
 } from 'firebase/firestore';
 
 // Documentación: https://firebase.google.com/docs/firestore/manage-data/add-data
 
-const usuariosCollection = collection(firestoreDB, 'usuarios');
+// const usuariosCollection = collection(firestoreDB, 'users');
 
-export default class UsuariosService {
+// CREATE
+export async function createUser(userData, matricula) {
+    const docRef = doc(firestoreDB, "users", matricula);
+    await setDoc(docRef, userData);
 
-    // READ
-    async getUsuarios() {
-        const usersSnapshot = await getDocs(usuariosCollection);
-        const userList = usersSnapshot.docs.map(doc => doc.data());
-        return userList;
-    }
-
-    async getUsuario() {
-        const docRef = doc(firestoreDB, "usuarios", "JDGkId6Df8Ev2n2Jag0L");
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
-            return docSnap.data();
-        } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
-            return null;
-        }
-    }
-
-    // CREATE
-    async createUsuario(usuario) {
-        const docRef = await addDoc(usuariosCollection, usuario);
-        return docRef;
-    }
+    // await addDoc(usuariosCollection, { name, surname, email, career, uid });
+    return docRef;
 }
+
+// // READ
+// async getUsuarios() {
+//     const usersSnapshot = await getDocs(usuariosCollection);
+//     const userList = usersSnapshot.docs.map(doc => doc.data());
+//     return userList;
+// }
+
+// async getUsuario() {
+//     const docRef = doc(firestoreDB, "usuarios", "JDGkId6Df8Ev2n2Jag0L");
+//     const docSnap = await getDoc(docRef);
+
+//     if (docSnap.exists()) {
+//         console.log("Document data:", docSnap.data());
+//         return docSnap.data();
+//     } else {
+//         // doc.data() will be undefined in this case
+//         console.log("No such document!");
+//         return null;
+//     }
+// }
+
 
 // // UPDATE
 // export async function updateUsuarioById() {

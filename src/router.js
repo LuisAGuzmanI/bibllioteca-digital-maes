@@ -34,6 +34,11 @@ const routes = [
         component: () => import('./pages/Login.vue')
     },
     {
+        path: '/singup',
+        name: 'singup',
+        component: () => import('./pages/SingUp.vue')
+    },
+    {
         path: '/landing',
         name: 'landing',
         component: () => import('./pages/LandingDemo.vue')
@@ -74,8 +79,8 @@ const getCurrentUser = () => {
 }
 
 router.beforeEach(async(to, from, next) => {
-    if(to.matched.some((record) => record.meta.requiresAuth)){
-        if(await getCurrentUser){
+    if(to.matched.some((record) =>  record.meta.requiresAuth)){ 
+        if(await getCurrentUser()){
             next();
         } else {
             alert('No tienes acceso a esta página. Por favor inicia sesión')

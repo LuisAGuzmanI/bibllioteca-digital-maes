@@ -4,7 +4,7 @@
     <div class="flex-1 ml-3">
       <span class="font-medium ml-2">Template</span>
       <a href="https://www.primefaces.org/sakai-vue/#/" target="_blank">
-        <img alt="Logo" :src="footerImage()" height="20" class="mr-2 ml-2" />
+        <img alt="Logo" :src="footerImage()" height="20" class="ml-1" />
       </a>
       by
       <span class="font-medium ml-2">PrimeVue</span>

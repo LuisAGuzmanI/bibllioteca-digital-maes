@@ -7,31 +7,25 @@
             <div class="col-12 xl:col-6" style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color), rgba(33, 150, 243, 0) 30%);">
                 <div class="h-full w-full m-0 py-7 px-4" style="border-radius:53px; background: linear-gradient(180deg, var(--surface-50) 38.9%, var(--surface-0));">
                     <div class="text-center mb-5">
-                        <div class="text-900 text-3xl font-medium mb-3">Bienvenid@ a la Biblioteca Digital MAEs</div>
-                        <span class="text-600 font-medium">Inicia sesión para continuar</span>
+                        <span class="text-600 font-medium">Ingresa tus datos para continuar</span>
                     </div>
                 
                     <div class="w-full md:w-10 mx-auto">
+                        <label for="name1" class="block text-900 text-xl font-medium mb-2">Nombre</label>
+                        <InputText id="name1" v-model="name" type="text" class="w-full mb-3" placeholder="Nombre" style="padding:1rem;" />
+                        <label for="surname1" class="block text-900 text-xl font-medium mb-2">Apellido</label>
+                        <InputText id="surname1" v-model="surname" type="text" class="w-full mb-3" placeholder="Apellido" style="padding:1rem;" />
+                        <label for="career1" class="block text-900 text-xl font-medium mb-2">Carrera (Siglas)</label>
+                        <InputText id="career1" v-model="career" type="text" class="w-full mb-3" placeholder="Ej. ITC, MC, LAF" style="padding:1rem;" />
                         <label for="email1" class="block text-900 text-xl font-medium mb-2">Correo</label>
                         <InputText id="email1" v-model="email" type="text" class="w-full mb-3" placeholder="example@tec.mx" style="padding:1rem;" />
-                
                         <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
                         <Password id="password1" v-model="password" placeholder="Contraseña" :toggleMask="true" class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem"></Password>
-                
-                        <div class="flex align-items-center justify-content-between mb-5">
-                            <!-- TODO: Agregar opción para recordar login manualmente -->
-                            <!-- <div class="flex align-items-center">
-                                <Checkbox id="rememberme1" v-model="checked" :binary="true" class="mr-2"></Checkbox>
-                                <label for="rememberme1">Remember me</label>
-                            </div> -->
-                            <!-- TODO: Agregar una opción para recuperar contraseña -->
-                            <!-- <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Olvidaste tu contraseña?</a> -->
-                        </div>
                         <span v-if="errorMsg" class="font-medium p-error">
                             {{errorMsg}}
                         </span>
-                        <Button @click="signIn" label="Iniciar sesión" class="w-full mt-4 p-3 text-xl"></button>
-                        <Button @click="goToRegister" label="Registrarse" class="w-full mt-4 p-3 text-xl"></button>
+                        <Button v-if="!areFieldsFilled" disabled="disabled" label="Registrarse" class="w-full mt-4 p-3 text-xl"></button>
+                        <Button v-else @click="register" label="Registrarse" class="w-full mt-4 p-3 text-xl"></button>
                     </div>
                 </div>
             </div>
@@ -40,13 +34,10 @@
 </template>
 
 <script>
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth"
+import { createUser } from "../firebase/firestore/users"
 import router from "../router";
 // import { useRouter } from "vue-router";
-
-// const signInWithGoogle = () => {
-
-// }
 
 export default {
 
@@ -54,27 +45,40 @@ export default {
         return {
             email: '',
             password: '',
+            name: '',
+            surname: '',
+            career: '',
             errorMsg: '',
             checked: false
         }
     },
     methods: {
-        goToRegister(){
-            router.push('/singup')
-        },
-        signIn() {
-            signInWithEmailAndPassword(getAuth(), this.email, this.password)
-            .then((data) => {
-                console.log("Succesfully signed!", data)
-                if(getAuth().currentUser.emailVerified){
-                    router.push('/'); // Envía al usuario a la pantalla de inicio
+        async register() {
+            try {
+                const matricula = this.email.split('@')[0];
+                const data = {
+                    email: this.email,
+                    name: this.name,
+                    surname: this.surname,
+                    career: this.career,
+                    uid: ''
                 }
-                else{
-                    alert("Por favor verifica tu correo para continuar")
-                }
-            })
-            .catch((error) => {
-                console.log(error.code)
+            
+                const auth = getAuth();
+                await createUserWithEmailAndPassword(auth, this.email, this.password)
+                .then(async (cred) =>{
+                    await sendEmailVerification(cred.user)
+                })
+
+                data.uid = auth.currentUser.uid;
+                
+                await createUser(data, matricula);
+                
+                alert("Se envió un correo de verificación, por favor verifica tu correo para iniciar sesión");
+                router.push('/login');
+
+            } catch (error) {
+                console.log(error)
                 switch(error.code) {
                     case "auth/invalid-email":
                         this.errorMsg = 'Correo no válido'
@@ -89,11 +93,14 @@ export default {
                         this.errorMsg = 'El correo o la constraseña no son válidos'
                         break;
                 }
-                // alert(error.message)
-            })
+            }
+
         },
     },
     computed: {
+        areFieldsFilled(){
+            return (!!this.email && !!this.password && !!this.name && !!this.surname && !!this.career);
+        },
         logoColor() {
             if (this.$appState.darkTheme) return 'white';
             return 'dark';
