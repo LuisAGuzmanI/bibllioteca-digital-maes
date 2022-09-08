@@ -1,7 +1,8 @@
 <template>
 
   <div class="flex align-content-center h-full" style="min-height: 300px">
-    <h1 class="flex align-items-center justify-content-center w-full">!En construcción! ✌</h1>
+    <h1 class="flex align-items-center justify-content-center w-full">¡En construcción! ✌</h1>
+  
   </div>
   <!-- <div class="grid">
     <div class="col-12 xl:col-6">
@@ -17,7 +18,7 @@
           <template #item="archivo">
             <div class="m-2">
               <Card>
-                <template #content>
+                <template #content></template>
                   <div class="border-round h-14rem surface-200 icon-div-center">
                     <i class="pi pi-file-pdf" style="font-size: 2rem"></i>
                   </div>
@@ -107,11 +108,18 @@
 </template>
 
 <script>
+import { useUsersStore } from "../../stores/users"
+const userStore = useUsersStore();
 // import UsuariosService from "../../firebase/firestore/usuarios-ep";
 
 // import { getAsesoriasIntensivas } from "../../firebase/firestore/asesorias-intensivas-ep";
 
 export default {
+  data(){
+    return {
+      userData: userStore.userData,
+    }
+  }
   // data() {
   //   return {
   //     archivosVistosRecientemente: [

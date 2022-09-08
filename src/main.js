@@ -1,3 +1,5 @@
+
+// Prime Vue Config
 import 'primevue/resources/primevue.min.css';
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
@@ -97,15 +99,17 @@ import TriStateCheckbox from 'primevue/tristatecheckbox';
 import CodeHighlight from './AppCodeHighlight';
 import BlockViewer from './BlockViewer';
 
+router.beforeEach(function(to, from, next) {
+    window.scrollTo(0, 0);
+    next();
+});
+
+// Firebase config
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';  
 import { getStorage } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 
-router.beforeEach(function(to, from, next) {
-    window.scrollTo(0, 0);
-    next();
-});
 
 const firebaseConfig = {
     apiKey: "AIzaSyALBNCMdSWnDRsqRpXACCi4bDuA1VN5LZg",
@@ -119,13 +123,16 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firestoreDB = getFirestore(firebaseApp);
-
-// Initialize Cloud Storage and get a reference to the service
 export const storage = getStorage(firebaseApp);
-
 export const auth = getAuth(firebaseApp);
 
 const app = createApp(AppWrapper);
+
+// Pinia
+import { createPinia } from 'pinia'
+const pinia = createPinia()
+
+app.use(pinia)
 
 app.config.globalProperties.$appState = reactive({ theme: 'lara-light-indigo', darkTheme: false });
 

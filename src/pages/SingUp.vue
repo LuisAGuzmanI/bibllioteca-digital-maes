@@ -16,7 +16,7 @@
                         <label for="surname1" class="block text-900 text-xl font-medium mb-2">Apellido</label>
                         <InputText id="surname1" v-model="surname" type="text" class="w-full mb-3" placeholder="Apellido" style="padding:1rem;" />
                         <label for="career1" class="block text-900 text-xl font-medium mb-2">Carrera (Siglas)</label>
-                        <InputText id="career1" v-model="career" type="text" class="w-full mb-3" placeholder="Ej. ITC, MC, LAF" style="padding:1rem;" />
+                        <InputText id="career1" v-model="career" maxlength="4" type="text" class="w-full mb-3" placeholder="Ej. ITC, MC, LAF" style="padding:1rem;" />
                         <label for="email1" class="block text-900 text-xl font-medium mb-2">Correo</label>
                         <InputText id="email1" v-model="email" type="text" class="w-full mb-3" placeholder="example@tec.mx" style="padding:1rem;" />
                         <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
@@ -36,7 +36,11 @@
 <script>
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth"
 import { createUser } from "../firebase/firestore/users"
+import { useUsersStore } from "../stores/users"
 import router from "../router";
+
+const userStore = useUsersStore();
+
 // import { useRouter } from "vue-router";
 
 export default {
@@ -55,26 +59,36 @@ export default {
     methods: {
         async register() {
             try {
-                const matricula = this.email.split('@')[0];
-                const data = {
-                    email: this.email,
-                    name: this.name,
-                    surname: this.surname,
-                    career: this.career,
-                    uid: ''
-                }
+                const matricula = this.email.split('@')[0].toUpperCase();
             
                 const auth = getAuth();
                 await createUserWithEmailAndPassword(auth, this.email, this.password)
                 .then(async (cred) =>{
                     await sendEmailVerification(cred.user)
                 })
-
-                data.uid = auth.currentUser.uid;
                 
-                await createUser(data, matricula);
+                const userData = {
+                    email: this.email,
+                    name: this.name,
+                    surname: this.surname,
+                    career: this.career.toUpperCase(),
+                    matricula,
+                    uid: auth.currentUser.uid,
+                    roles: {
+                        admin: false,
+                        coordi: false,
+                        mae: false,
+                        student: true
+                    }
+                }
+
+                await createUser(userData, auth.currentUser.uid);
+                userStore.userData = userData;
                 
                 alert("Se envió un correo de verificación, por favor verifica tu correo para iniciar sesión");
+
+                console.log(userData);
+
                 router.push('/login');
 
             } catch (error) {

@@ -16,7 +16,7 @@
                         <InputText id="email1" v-model="email" type="text" class="w-full mb-3" placeholder="example@tec.mx" style="padding:1rem;" />
                 
                         <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
-                        <Password id="password1" v-model="password" placeholder="Contraseña" :toggleMask="true" class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem"></Password>
+                        <Password v-on:keyup.enter="signIn" id="password1" v-model="password" placeholder="Contraseña" :toggleMask="true" class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem"></Password>
                 
                         <div class="flex align-items-center justify-content-between mb-5">
                             <!-- TODO: Agregar opción para recordar login manualmente -->
@@ -41,12 +41,11 @@
 
 <script>
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
+import { getUser } from "../firebase/firestore/users"
 import router from "../router";
-// import { useRouter } from "vue-router";
+import { useUsersStore } from "../stores/users"
 
-// const signInWithGoogle = () => {
-
-// }
+const userStore = useUsersStore();
 
 export default {
 
@@ -64,9 +63,10 @@ export default {
         },
         signIn() {
             signInWithEmailAndPassword(getAuth(), this.email, this.password)
-            .then((data) => {
+            .then( async (data) => {
                 console.log("Succesfully signed!", data)
                 if(getAuth().currentUser.emailVerified){
+                    userStore.userData = await getUser(getAuth().currentUser.uid)
                     router.push('/'); // Envía al usuario a la pantalla de inicio
                 }
                 else{

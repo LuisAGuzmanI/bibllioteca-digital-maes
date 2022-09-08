@@ -2,20 +2,32 @@ import { firestoreDB } from '../../main';
 import {
     // collection,
     doc,
-    setDoc
+    setDoc, 
+    getDoc
 } from 'firebase/firestore';
 
 // Documentación: https://firebase.google.com/docs/firestore/manage-data/add-data
 
 // const usuariosCollection = collection(firestoreDB, 'users');
 
-// CREATE
-export async function createUser(userData, matricula) {
-    const docRef = doc(firestoreDB, "users", matricula);
+// Stores user data with User uid as reference
+export async function createUser(userData, uid) {
+    const docRef = doc(firestoreDB, "users", uid);
     await setDoc(docRef, userData);
 
     // await addDoc(usuariosCollection, { name, surname, email, career, uid });
     return docRef;
+}
+
+export async function getUser(uid) {
+    const docRef = doc(firestoreDB, "users", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        return docSnap.data();
+    } else {
+        return null;
+    }
 }
 
 // // READ
@@ -25,19 +37,6 @@ export async function createUser(userData, matricula) {
 //     return userList;
 // }
 
-// async getUsuario() {
-//     const docRef = doc(firestoreDB, "usuarios", "JDGkId6Df8Ev2n2Jag0L");
-//     const docSnap = await getDoc(docRef);
-
-//     if (docSnap.exists()) {
-//         console.log("Document data:", docSnap.data());
-//         return docSnap.data();
-//     } else {
-//         // doc.data() will be undefined in this case
-//         console.log("No such document!");
-//         return null;
-//     }
-// }
 
 
 // // UPDATE
