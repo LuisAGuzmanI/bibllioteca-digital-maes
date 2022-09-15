@@ -1,4 +1,5 @@
 import { firestoreDB } from '../../main';
+import { getAuth } from "firebase/auth"
 import {
     // collection,
     doc,
@@ -24,6 +25,18 @@ export async function getUser(uid) {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
+        return docSnap.data();
+    } else {
+        return null;
+    }
+}
+
+export async function getCurrentUser() {
+    const docRef = doc(firestoreDB, "users", getAuth().currentUser.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        
         return docSnap.data();
     } else {
         return null;

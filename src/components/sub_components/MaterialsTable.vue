@@ -219,7 +219,7 @@ export default {
         !!this.typeQuery ||
         !!this.titleQuery
       );
-    },
+    }
   },
   watch: {
     areaQuery() {

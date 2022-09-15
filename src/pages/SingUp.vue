@@ -20,7 +20,7 @@
                         <label for="email1" class="block text-900 text-xl font-medium mb-2">Correo</label>
                         <InputText id="email1" v-model="email" type="text" class="w-full mb-3" placeholder="example@tec.mx" style="padding:1rem;" />
                         <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
-                        <Password id="password1" v-model="password" placeholder="Contraseña" :toggleMask="true" class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem"></Password>
+                        <Password id="password1" v-model="password" v-on:keyup.enter="register" placeholder="Contraseña" :toggleMask="true" class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem"></Password>
                         <span v-if="errorMsg" class="font-medium p-error">
                             {{errorMsg}}
                         </span>

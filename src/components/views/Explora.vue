@@ -12,6 +12,7 @@
       </div>
       <div class="inline-block flex-2">
         <Button
+          v-if="userCanUpload"
           label="Subir Archivo"
           icon="pi pi-upload"
           @click="onPressModalButton"
@@ -27,6 +28,11 @@
 // Component Imports
 import UploadDialog from "../sub_components/UploadDialog.vue";
 import MaterialsTableVue from "../sub_components/MaterialsTable.vue";
+import { getCurrentUser } from "../../firebase/firestore/users";
+// import { useUsersStore } from "../../stores/users";
+
+// const userStore = useUsersStore();
+// const {admin, coordi, mae} = userStore.userData.roles;
 
 export default {
   components: {
@@ -36,6 +42,7 @@ export default {
   data() {
     return {
       displayUpload: false,
+      userCanUpload: false,
 
       areaOptions: [
         { name: "Ingeniería", code: "ingenieria" },
@@ -49,6 +56,11 @@ export default {
         { name: "Salud", code: "salud" },
       ],
     };
+  },
+  async created() {
+    const currentUser = await getCurrentUser();
+    const {admin, coordi, mae} = currentUser.roles
+    this.userCanUpload = admin || coordi || mae;
   },
   methods: {
     onPressModalButton() {
