@@ -233,7 +233,7 @@ export default {
     subjectQuery() {
       if (this.subjectQuery !== "") {
         this.displayTableData = this.tableData.filter((row) => {
-          return row.subject == this.subjectQuery.name;
+          return row.subject == this.subjectQuery.code;
         });
       }
     },
@@ -245,7 +245,6 @@ export default {
       }
     },
     selectedRow() {
-      console.log(this.selectedRow.fileUrl);
       this.displayMaterial = true;
     },
   },

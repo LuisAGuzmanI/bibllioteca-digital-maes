@@ -3,7 +3,9 @@ import {
     collection,
     addDoc,
     getDocs,
-    Timestamp
+    Timestamp,
+    query,
+    orderBy
 } from "firebase/firestore";
 import formatDate from '../../helpers/formatDate';
 import getFormatedFileType from '../../helpers/getFormatedFileType';
@@ -28,7 +30,9 @@ export async function createMaterial(data) {
 }
 
 export async function getMaterials() {
-    const materialsSnapshot = await getDocs(materialColletion);
+    const q = query(materialColletion, orderBy("area"));
+    const materialsSnapshot = await getDocs(q);
+    // const materialsSnapshot = await getDocs(materialColletion);
     const materialList = materialsSnapshot.docs.map(doc => doc.data());
 
     materialList.map((element) => {
