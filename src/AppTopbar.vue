@@ -36,7 +36,7 @@ export default {
             this.$emit('topbar-menu-toggle', event);
         },
 		topbarImage() {
-			return this.$appState.darkTheme ? 'images/logo-maes.svg' : 'images/logo-maes.svg';
+			return this.$appState.darkTheme ? 'images/maeteca-logo.svg' : 'images/maeteca-logo.svg';
 		},
 		handleSingOut(){
 			console.log('onSingOut!')
