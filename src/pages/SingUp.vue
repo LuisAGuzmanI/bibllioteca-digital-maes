@@ -4,27 +4,45 @@
             <div class="col-12 mt-5 xl:mt-0 text-center">
                 <img :src="'images/logo-maes.svg'" alt="MAE" class="mb-5" style="width:200px; height:150px;">
             </div>
-            <div class="col-12 xl:col-6" style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color), rgba(33, 150, 243, 0) 30%);">
-                <div class="h-full w-full m-0 py-7 px-4" style="border-radius:53px; background: linear-gradient(180deg, var(--surface-50) 38.9%, var(--surface-0));">
+            <div class="col-12 xl:col-6"
+                style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color), rgba(33, 150, 243, 0) 30%);">
+                <div class="h-full w-full m-0 py-7 px-4"
+                    style="border-radius:53px; background: linear-gradient(180deg, var(--surface-50) 38.9%, var(--surface-0));">
                     <div class="text-center mb-5">
                         <span class="text-600 font-medium">Ingresa tus datos para continuar</span>
                     </div>
-                
+
                     <div class="w-full md:w-10 mx-auto">
                         <label for="name1" class="block text-900 text-xl font-medium mb-2">Nombre</label>
-                        <InputText id="name1" v-model="name" type="text" class="w-full mb-3" placeholder="Nombre" style="padding:1rem;" />
+                        <InputText id="name1" v-model="name" type="text" class="w-full mb-3" placeholder="Nombre"
+                            style="padding:1rem;" />
                         <label for="surname1" class="block text-900 text-xl font-medium mb-2">Apellido</label>
-                        <InputText id="surname1" v-model="surname" type="text" class="w-full mb-3" placeholder="Apellido" style="padding:1rem;" />
+                        <InputText id="surname1" v-model="surname" type="text" class="w-full mb-3"
+                            placeholder="Apellido" style="padding:1rem;" />
                         <label for="career1" class="block text-900 text-xl font-medium mb-2">Carrera (Siglas)</label>
-                        <InputText id="career1" v-model="career" maxlength="4" type="text" class="w-full mb-3" placeholder="Ej. ITC, MC, LAF" style="padding:1rem;" />
+                        <InputText id="career1" v-model="career" maxlength="4" type="text" class="w-full mb-3"
+                            placeholder="Ej. ITC, MC, LAF" style="padding:1rem;" />
                         <label for="email1" class="block text-900 text-xl font-medium mb-2">Correo</label>
-                        <InputText id="email1" v-model="email" type="text" class="w-full mb-3" placeholder="example@tec.mx" style="padding:1rem;" />
+                        <InputText id="email1" v-model="email" type="text" class="w-full mb-3"
+                            placeholder="example@tec.mx" style="padding:1rem;" />
                         <label for="password1" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
-                        <Password id="password1" v-model="password" v-on:keyup.enter="register" placeholder="Contraseña" :toggleMask="true" class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem"></Password>
+                        <Password id="password1" v-model="password" v-on:keyup.enter="register" placeholder="Contraseña"
+                            :toggleMask="true" class="w-full mb-3" inputClass="w-full" inputStyle="padding:1rem">
+                        </Password>
+
+                        <label for="email1" class="block text-900 text-xl font-medium mb-2">Rol</label>
+                        <Dropdown v-model="selectedRole" :options="roles" optionLabel="name" placeholder="Estudiante"
+                            emptyMessage="No hay opciones disponibles" class="w-full mb-3" />
+
+                        <Password v-if="selectedRole.code != 'student'" id="password1" v-model="rolePassword"
+                            v-on:keyup.enter="register" placeholder="Contraseña" :toggleMask="true" class="w-full mb-3"
+                            inputClass="w-full" inputStyle="padding:1rem"></Password>
+
                         <span v-if="errorMsg" class="font-medium p-error">
-                            {{errorMsg}}
+                            {{ errorMsg }}
                         </span>
-                        <Button v-if="!areFieldsFilled" disabled="disabled" label="Registrarse" class="w-full mt-4 p-3 text-xl"></button>
+                        <Button v-if="!areFieldsFilled" disabled="disabled" label="Registrarse"
+                            class="w-full mt-4 p-3 text-xl"></button>
                         <Button v-else @click="register" label="Registrarse" class="w-full mt-4 p-3 text-xl"></button>
                     </div>
                 </div>
@@ -35,7 +53,7 @@
 
 <script>
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth"
-import { createUser } from "../firebase/firestore/users"
+import { createUser, checkForRolePassword } from "../firebase/firestore/users"
 import { useUsersStore } from "../stores/users"
 import router from "../router";
 
@@ -49,24 +67,73 @@ export default {
         return {
             email: '',
             password: '',
+            rolePassword: '',
             name: '',
             surname: '',
             career: '',
             errorMsg: '',
-            checked: false
+            checked: false,
+
+            roles: [
+                { name: "Estudiante", code: "student" },
+                { name: "MAE", code: "mae" },
+                { name: "Coordinador", code: "coordi" },
+                { name: "Admin", code: "admin" },
+            ],
+            selectedRole: { code: 'student' }
         }
     },
     methods: {
         async register() {
             try {
+
+                let roles = {
+                    student: true,
+                    mae: true,
+                    coordi: false,
+                    admin: false
+                }
+
+                if (this.selectedRole.code !== 'student') {
+                    if (! await checkForRolePassword(this.rolePassword, this.selectedRole.code)) {
+                        throw { code: "wrong-role-password" };
+                    } else {
+                        if (this.selectedRole.code === 'mae') {
+                            roles = {
+                                student: true,
+                                mae: true,
+                                coordi: false,
+                                admin: false
+                            }
+                        }
+                        else if (this.selectedRole.code === 'coordi') {
+                            roles = {
+                                student: true,
+                                mae: true,
+                                coordi: true,
+                                admin: false
+                            }
+                        }
+                        else if (this.selectedRole.code === 'admin') {
+                            roles = {
+                                student: true,
+                                mae: true,
+                                coordi: true,
+                                admin: true
+                            }
+                        }
+
+                    }
+                }
+
                 const matricula = this.email.split('@')[0].toUpperCase();
-            
+
                 const auth = getAuth();
                 await createUserWithEmailAndPassword(auth, this.email, this.password)
-                .then(async (cred) =>{
-                    await sendEmailVerification(cred.user)
-                })
-                
+                    .then(async (cred) => {
+                        await sendEmailVerification(cred.user)
+                    })
+
                 const userData = {
                     email: this.email,
                     name: this.name,
@@ -74,17 +141,12 @@ export default {
                     career: this.career.toUpperCase(),
                     matricula,
                     uid: auth.currentUser.uid,
-                    roles: {
-                        admin: false,
-                        coordi: false,
-                        mae: false,
-                        student: true
-                    }
+                    roles
                 }
 
                 await createUser(userData, auth.currentUser.uid);
                 userStore.userData = userData;
-                
+
                 alert("Se envió un correo de verificación, por favor verifica tu correo para iniciar sesión");
 
                 console.log(userData);
@@ -92,8 +154,7 @@ export default {
                 router.push('/login');
 
             } catch (error) {
-                console.log(error)
-                switch(error.code) {
+                switch (error.code) {
                     case "auth/invalid-email":
                         this.errorMsg = 'Correo no válido'
                         break;
@@ -102,6 +163,9 @@ export default {
                         break;
                     case "auth/wrong-password":
                         this.errorMsg = 'Contraseña incorrecta'
+                        break;
+                    case "wrong-role-password":
+                        this.errorMsg = 'La contraseña de rol es incorrecta'
                         break;
                     default:
                         this.errorMsg = 'El correo o la constraseña no son válidos'
@@ -112,25 +176,25 @@ export default {
         },
     },
     computed: {
-        areFieldsFilled(){
+        areFieldsFilled() {
             return (!!this.email && !!this.password && !!this.name && !!this.surname && !!this.career);
         },
         logoColor() {
             if (this.$appState.darkTheme) return 'white';
             return 'dark';
         }
-    }
+    },
 }
 </script>
 
 <style scoped>
 .pi-eye {
-    transform:scale(1.6);
+    transform: scale(1.6);
     margin-right: 1rem;
 }
 
 .pi-eye-slash {
-    transform:scale(1.6);
+    transform: scale(1.6);
     margin-right: 1rem;
 }
 </style>

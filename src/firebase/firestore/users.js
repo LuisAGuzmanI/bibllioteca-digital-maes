@@ -36,10 +36,20 @@ export async function getCurrentUser() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        
         return docSnap.data();
     } else {
         return null;
+    }
+}
+
+export async function checkForRolePassword(password, role) {
+    const docRef = doc(firestoreDB, "users/rolesAuth/rolesAuth", role);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        return docSnap.data().password == password;
+    } else {
+        return false;
     }
 }
 
