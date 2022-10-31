@@ -89,7 +89,7 @@ export default {
 
                 let roles = {
                     student: true,
-                    mae: true,
+                    mae: false,
                     coordi: false,
                     admin: false
                 }
