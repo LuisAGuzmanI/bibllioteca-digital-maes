@@ -13,15 +13,17 @@
                     </div>
 
                     <div class="w-full md:w-10 mx-auto">
-                        <label for="name1" class="block text-900 text-xl font-medium mb-2">Nombre</label>
-                        <InputText id="name1" v-model="name" type="text" class="w-full mb-3" placeholder="Nombre"
-                            style="padding:1rem;" />
-                        <label for="surname1" class="block text-900 text-xl font-medium mb-2">Apellido</label>
-                        <InputText id="surname1" v-model="surname" type="text" class="w-full mb-3"
+                        <label for="firstname" class="block text-900 text-xl font-medium mb-2">Nombre</label>
+                        <InputText id="firstname" v-model="firstname" type="text" class="w-full mb-3"
+                            placeholder="Nombre" style="padding:1rem;" />
+                        <label for="lastname1" class="block text-900 text-xl font-medium mb-2">Apellido</label>
+                        <InputText id="lastname1" v-model="lastname" type="text" class="w-full mb-3"
                             placeholder="Apellido" style="padding:1rem;" />
                         <label for="career1" class="block text-900 text-xl font-medium mb-2">Carrera (Siglas)</label>
-                        <InputText id="career1" v-model="career" maxlength="4" type="text" class="w-full mb-3"
-                            placeholder="Ej. ITC, MC, LAF" style="padding:1rem;" />
+                        <!-- <InputText id="career1" v-model="career" maxlength="4" type="text" class="w-full mb-3"
+                            placeholder="Ej. ITC, MC, LAF" style="padding:1rem;" /> -->
+                        <Dropdown v-model="career" :options="carreerOptions" optionLabel="name"
+                            emptyMessage="No hay opciones disponibles" class="w-full mb-3" />
                         <label for="email1" class="block text-900 text-xl font-medium mb-2">Correo</label>
                         <InputText id="email1" v-model="email" type="text" class="w-full mb-3"
                             placeholder="example@tec.mx" style="padding:1rem;" />
@@ -68,9 +70,9 @@ export default {
             email: '',
             password: '',
             rolePassword: '',
-            name: '',
-            surname: '',
-            career: '',
+            firstname: '',
+            lastname: '',
+            career: { career: '', area: '' },
             errorMsg: '',
             checked: false,
 
@@ -80,7 +82,187 @@ export default {
                 { name: "Coordinador", code: "coordi" },
                 { name: "Admin", code: "admin" },
             ],
-            selectedRole: { code: 'student' }
+            selectedRole: { code: 'student' },
+            carreerOptions: [
+                {
+                    name: "Arquitectura",
+                    code: { career: "ARQ", area: "Ambiente Construido" }
+                },
+                {
+                    name: "Ingeniería Civil",
+                    code: { career: "IC", area: "Ambiente Construido" },
+                },
+                {
+                    name: "Licenciatura en Urbanismo",
+                    code: { career: "LUB", area: "Ambiente Construido" },
+                },
+                {
+                    name: "Licenciatura en Economía",
+                    code: { career: "LEC", area: "Derecho, Economía y Relaciones Internacionales" },
+                },
+                {
+                    name: "Licenciatura en Derecho",
+                    code: { career: "LED", area: "Derecho, Economía y Relaciones Internacionales" },
+                },
+                {
+                    name: "Licenciatura en Relaciones Internacionales",
+                    code: { career: "LRI", area: "Derecho, Economía y Relaciones Internacionales" },
+                },
+                {
+                    name: "Licenciatura en Gobierno y Transformación Pública",
+                    code: { career: "LTP", area: "Derecho, Economía y Relaciones Internacionales" },
+                },
+                {
+                    name: "Licenciatura en Arte Digital",
+                    code: { career: "LAD", area: "Estudios Creativos" },
+                },
+                {
+                    name: "Licenciatura en Comunicación",
+                    code: { career: "LC", area: "Estudios Creativos" },
+                },
+                {
+                    name: "Licenciatura en Diseño",
+                    code: { career: "LDI", area: "Estudios Creativos" },
+                },
+                {
+                    name: "Licenciatura en Innovación Educativa",
+                    code: { career: "LEI", area: "Estudios Creativos" },
+                },
+                {
+                    name: "Licenciatura en Letras Hispánicas",
+                    code: { career: "LLE", area: "Estudios Creativos" },
+                },
+                {
+                    name: "Licenciatura en Periodismo",
+                    code: { career: "LPE", area: "Estudios Creativos" },
+                },
+                {
+                    name: "Licenciatura en Tecnología y Producción Musical",
+                    code: { career: "LTM", area: "Estudios Creativos" },
+                },
+                {
+                    name: "Ingeniería en Ciencia de Datos y Matemáticas",
+                    code: { career: "IDM", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Física Industrial",
+                    code: { career: "IFI", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Nanotecnología",
+                    code: { career: "INA", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Biosistemas Agroalimentarios",
+                    code: { career: "IAG", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Alimentos",
+                    code: { career: "IAL", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Biotecnología",
+                    code: { career: "IBT", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Desarrollo Sustentable",
+                    code: { career: "IDS", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería Química",
+                    code: { career: "IQ", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Robótica y Sistemas Digitales",
+                    code: { career: "IRS", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Tecnologías Computacionales",
+                    code: { career: "ITC", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Transformación Digital de Negocios",
+                    code: { career: "ITD", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Electrónica",
+                    code: { career: "IE", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Innovación y Desarrollo",
+                    code: { career: "IID", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería Industrial y de Sistemas",
+                    code: { career: "IIS", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería en Mecatrónica",
+                    code: { career: "IMT", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería Mecánica",
+                    code: { career: "IM", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Ingeniería Biomédica",
+                    code: { career: "IMD", area: "Ingeniería y Ciencias" },
+                },
+                {
+                    name: "Licenciatura en Estrategia y Transformación de Negocios",
+                    code: { career: "LAE", area: "Negocios" },
+                },
+                {
+                    name: "Licenciatura en Finanzas",
+                    code: { career: "LAF", area: "Negocios" },
+                },
+                {
+                    name: "Licenciatura en Contaduría Pública y Finanzas",
+                    code: { career: "LCPF", area: "Negocios" },
+                },
+                {
+                    name: "Licenciatura en Emprendimiento",
+                    code: { career: "LDE", area: "Negocios" },
+                },
+                {
+                    name: "Licenciatura en Desarrollo de Talento y Cultura Organizacional",
+                    code: { career: "LDO", area: "Negocios" },
+                },
+                {
+                    name: "Licenciatura en Mercadotecnia",
+                    code: { career: "LEM", area: "Negocios" },
+                },
+                {
+                    name: "Licenciatura en Negocios Internacionales",
+                    code: { career: "LIN", area: "Negocios" },
+                },
+                {
+                    name: "Licenciatura en Inteligencia de Negocios",
+                    code: { career: "LIT", area: "Negocios" },
+                },
+                {
+                    name: "Licenciatura en Biociencias",
+                    code: { career: "LBC", area: "Salud" },
+                },
+                {
+                    name: "Licenciatura en Nutrición y Bienestar Integral",
+                    code: { career: "LNB", area: "Salud" },
+                },
+                {
+                    name: "Licenciatura en Psicología Clínica y de la Salud",
+                    code: { career: "LPS", area: "Salud" },
+                },
+                {
+                    name: "Médico Cirujano",
+                    code: { career: "MC", area: "Salud" },
+                },
+                {
+                    name: "Médico Cirujano Odontólogo",
+                    code: { career: "MO", area: "Salud" },
+                }
+            ]
+
+
         }
     },
     methods: {
@@ -126,7 +308,7 @@ export default {
                     }
                 }
 
-                const matricula = this.email.split('@')[0].toUpperCase();
+                const id = this.email.split('@')[0].toUpperCase();
 
                 const auth = getAuth();
                 await createUserWithEmailAndPassword(auth, this.email, this.password)
@@ -136,10 +318,12 @@ export default {
 
                 const userData = {
                     email: this.email,
-                    name: this.name,
-                    surname: this.surname,
-                    career: this.career.toUpperCase(),
-                    matricula,
+                    firstname: this.firstname,
+                    lastname: this.lastname,
+                    name: this.firstname.trim() + ' ' + this.lastname.trim(),
+                    career: this.career.code.career,
+                    area: this.career.code.area,
+                    id,
                     uid: auth.currentUser.uid,
                     roles
                 }
@@ -177,7 +361,7 @@ export default {
     },
     computed: {
         areFieldsFilled() {
-            return (!!this.email && !!this.password && !!this.name && !!this.surname && !!this.career);
+            return (!!this.email && !!this.password && !!this.firstname && !!this.lastname && !!this.career.code.area && !!this.career.code.career);
         },
         logoColor() {
             if (this.$appState.darkTheme) return 'white';
